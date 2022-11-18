@@ -20,6 +20,22 @@ class DirectoryController extends Controller
 
     }
 
+    public function buscar(Request $request)
+    {
+
+        $buscar = $request->buscar;
+        $directories = Directory::where('active',1)
+                    ->where('nombre_unidad', 'like', "%$buscar%")
+                    ->orderBy('id','desc')
+                    ->get();
+
+        return response()->json([
+            'ok'=>true,
+            'data' => $directories,
+        ]);
+
+    }
+
     public function getApiDirectoriesAgent(Request $request)
     {
         //if(!$request->ajax()) return redirect('/');
@@ -111,8 +127,8 @@ class DirectoryController extends Controller
     }//.getDirectoriesAgent()
 
     public function asignarRegistrosAgente(Request $request){
-        $agente_id   =   $request->agente_id;
-        $buscar      =   $request->buscar;
+        $agente_id   = $request->agente_id;
+        $buscar      = $request->buscar;
         $criterio    = $request->criterio;
         $num_registros = $request->num_registros;
 
@@ -156,25 +172,30 @@ class DirectoryController extends Controller
 
     public function store(Request $request){
 
+        $dir = $request->directory;
+        $person_id= $request->person_id;
+
         //$directory= Directory::findOrFail(1);
         $directory =new Directory();
-        $directory->nombre_unidad = $request->nombre_unidad;
-        $directory->codigo_scian =  $request->codigo_scian;
-        $directory->nombre_clase_actividad = $request->nombre_clase_actividad;
-        $directory->descripcion_estrato_personal_ocupado= $request->descripcion_estrato_personal_ocupado;
-        $directory->nombre_vialidad  = $request->nombre_vialidad;
-        $directory->numero_exterior_o_kilometro = $request->numero_exterior_o_kilometro;
-        $directory->nombre_asentamiento_humano=$request->nombre_asentamiento_humano;
-        $directory->codigo_postal=$request->codigo_postal;
-        $directory->numero_telefono=$request->numero_telefono;
-        $directory->correo_electronico=$request->correo_electronico;
-        $directory->sitio_internet=$request->sitio_internet;
+        $directory->nombre_unidad           = $dir['nombre_unidad'];
+        $directory->codigo_scian            = $dir['codigo_scian'];
+        $directory->nombre_clase_actividad  = $dir['nombre_clase_actividad'];
+        $directory->nombre_vialidad         = $dir['nombre_vialidad'];
+        $directory->codigo_postal           = $dir['codigo_postal'];
+        $directory->numero_telefono         = $dir['numero_telefono'];
+        $directory->correo_electronico      = $dir['correo_electronico'];
+        $directory->sitio_internet          = $dir['sitio_internet'];
+        $directory->latitud                 = $dir['latitud'];
+        $directory->longitud                = $dir['longitud'];
+        $directory->numero_exterior_o_kilometro = $dir['numero_exterior_o_kilometro'];
+        $directory->nombre_asentamiento_humano  = $dir['nombre_asentamiento_humano'];
+        $directory->descripcion_estrato_personal_ocupado= $dir['descripcion_estrato_personal_ocupado'];
 
-        $directory->latitud=$request->latitud;
-        $directory->longitud=$request->longitud;
 
         $directory->status_id = 0;
-        $directory->agent_id  = 0;
+        $directory->agent_id  = $person_id;
+        $directory->asignada  = 1;
+
         $directory->tipo_vialidad = 'CALLE';
         $directory->tipo_asentamiento_humano='COLONIA';
         $directory->clave_entidad='21';
@@ -207,6 +228,8 @@ class DirectoryController extends Controller
             'directory' => $directory,
         ]);
     }
+
+
 
 
 }

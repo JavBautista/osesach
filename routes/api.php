@@ -20,6 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 */
 Route::get('directory','App\Http\Controllers\DirectoryController@index');
+
+Route::get('directory/buscar','App\Http\Controllers\DirectoryController@buscar');
+
 Route::get('directory/agent-asignacion','App\Http\Controllers\DirectoryController@getApiDirectoriesAgent');
 
 Route::post('directory/store','App\Http\Controllers\DirectoryController@store');
