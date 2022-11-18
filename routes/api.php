@@ -20,6 +20,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 */
 Route::get('directory','App\Http\Controllers\DirectoryController@index');
+Route::get('directory/agent-asignacion','App\Http\Controllers\DirectoryController@getApiDirectoriesAgent');
+
+Route::post('directory/store','App\Http\Controllers\DirectoryController@store');
+Route::post('directory/update','App\Http\Controllers\DirectoryController@update');
+
+Route::get('visit/get','App\Http\Controllers\VisitController@index');
+Route::post('visit/store','App\Http\Controllers\VisitController@store');
+
+Route::get('activities/get','App\Http\Controllers\ActivityController@index');
+
+Route::get('visit/get/avance','App\Http\Controllers\VisitController@getAvance');
+
+
 
 Route::group([
     'prefix' => 'auth'

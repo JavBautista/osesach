@@ -12,5 +12,18 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .vue()
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+    .styles([
+            'resources/templates/coreui/css/font-awesome.min.css',
+            'resources/templates/coreui/css/simple-line-icons.min.css',
+            'resources/templates/coreui/css/style.css'
+            ],'public/css/dashboard.css')
+    .scripts([
+            'resources/templates/coreui/js/pace.min.js',
+            'resources/templates/coreui/js/Chart.min.js',
+            'resources/templates/coreui/js/template.js',
+            'resources/templates/coreui/js/sweetalert2.all.min.js'
+            ],'public/js/dashboard.js')
+    .vue();
+
+    mix.browserSync('http://osesach.local/');

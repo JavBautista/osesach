@@ -9,4 +9,8 @@ class Visit extends Model
 {
     use HasFactory;
     protected $guarded=[];
+
+    public function directory(){
+        return $this->belongsTo(Directory::class);
+    }
 }

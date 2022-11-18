@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Person;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -106,9 +107,12 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
+        //$request->user()->authorizeRoles(['admin']);
+        $person = Person::find($request->user()->person_id);
         return response()->json([
             'ok'=>true,
             'usuario'=>$request->user(),
+            'person'=>$person
             ]);
     }
 
