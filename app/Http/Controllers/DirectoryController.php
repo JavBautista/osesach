@@ -156,7 +156,7 @@ class DirectoryController extends Controller
 
     public function store(Request $request){
 
-        $directory= Directory::findOrFail(1);
+        //$directory= Directory::findOrFail(1);
         $directory =new Directory();
         $directory->nombre_unidad = $request->nombre_unidad;
         $directory->codigo_scian =  $request->codigo_scian;
