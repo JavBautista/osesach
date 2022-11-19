@@ -43,7 +43,8 @@ class DirectoryController extends Controller
         $directories = Directory::where('active',1)
                     ->where('agent_id',$agente_id)
                     ->where('asignada',1)
-                    ->orderBy('id','desc')
+                    ->orderBy('codigo_postal','ASC')
+                    ->orderBy('nombre_vialidad','ASC')
                     ->paginate(100);
 
 
