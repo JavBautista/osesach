@@ -16,18 +16,17 @@
                 <a href="asignacion" class="nav-link"> Asignación </a>
             </li>
 
+<!--
             <li class="nav-item">
                 <a href="#" class="nav-link"> Item 1 </a>
             </li>
+        -->
 
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-bag"></i> Item 2</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-bag"></i> Reportes</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"> Sub item 1</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Sub item 2</a>
+                        <a class="nav-link" href="avance-general"> Avance general</a>
                     </li>
                 </ul>
             </li>

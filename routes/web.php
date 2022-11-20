@@ -57,4 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/asignar/update/asignar-registros', [App\Http\Controllers\DirectoryController::class, 'asignarRegistrosAgente']);
     Route::put('/asignar/update/desasignar-registros', [App\Http\Controllers\DirectoryController::class, 'desasignarRegistrosAgente']);
+
+    //AVANCES
+    Route::get('/avance-general', [App\Http\Controllers\ReportsController::class, 'avanceGeneral']);
 });#./Middlware AUTH
