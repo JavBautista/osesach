@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: <?=$porcentaje?>%;" aria-valuenow="<?=$porcentaje?>" aria-valuemin="0" aria-valuemax="100">25%</div>
+                  <div class="progress-bar" role="progressbar" style="width: <?=$porcentaje?>%;" aria-valuenow="<?=$porcentaje?>" aria-valuemin="0" aria-valuemax="100"><?=$porcentaje?>%</div>
                 </div>
                 <hr>
                 <table class="table table-bordered table-striped table-sm">
