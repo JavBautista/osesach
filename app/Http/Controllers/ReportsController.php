@@ -49,7 +49,7 @@ class ReportsController extends Controller
                             ->where('agent_id',$prs_id)
                             ->count();
 
-             $porcentaje=0;
+            $porcentaje=0;
             if($asignado>0){
                 $porcentaje = ($trabajado*100)/$asignado;
             }

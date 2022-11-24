@@ -26,8 +26,8 @@
 
                         <td>{{$persona['persona_id']}}</td>
                         <td>{{$persona['persona_nombre']}}</td>
-                        <td>{{$persona['trabajado']}}</td>
                         <td>{{$persona['asignado']}}</td>
+                        <td>{{$persona['trabajado']}}</td>
                         <td>{{$persona['porcentaje']}}</td>
                     </tr>
                     @endforeach
