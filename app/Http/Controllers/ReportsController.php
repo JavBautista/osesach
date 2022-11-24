@@ -48,7 +48,12 @@ class ReportsController extends Controller
             $asignado = DB::table('directories')
                             ->where('agent_id',$prs_id)
                             ->count();
-            $porcentaje = ($trabajado*100)/$asignado;
+
+             $porcentaje=0;
+            if($asignado>0){
+                $porcentaje = ($trabajado*100)/$asignado;
+            }
+
             $porcentaje= number_format($porcentaje,2);
             $tmp=[
                 'persona_id'=>$prs_id,
