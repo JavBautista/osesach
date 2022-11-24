@@ -18,9 +18,11 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('activities-component', require('./components/ActivitiesComponent.vue').default);
 Vue.component('agente-directories-component', require('./components/AgenteDirectoriesComponent.vue').default);
 Vue.component('asignacion-component', require('./components/AsignacionComponent.vue').default);
 Vue.component('asignar-directories-agente-component', require('./components/AsignarDirectoriesAgenteComponent.vue').default);
+Vue.component('directories-component', require('./components/DirectoriesComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('people-component', require('./components/PeopleComponent.vue').default);

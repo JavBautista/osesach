@@ -20,4 +20,52 @@ class ActivityController extends Controller
         }
         return $activities;
     }
+
+    public function inicio(){
+        return view('activities');
+    }
+
+    public function get(Request $request){
+        //if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar==''){
+            $activities = Activity::orderBy('activity', 'asc')
+                        ->paginate(20);
+        }else{
+            $activities = Activity::where($criterio, 'like', '%'.$buscar.'%')
+                        ->orderBy('activity', 'asc')
+                        ->paginate(20);
+        }
+
+        return [
+            'pagination'=>[
+                'total'=> $activities->total(),
+                'current_page'=> $activities->currentPage(),
+                'per_page'=> $activities->perPage(),
+                'last_page'=> $activities->lastPage(),
+                'from'=> $activities->firstItem(),
+                'to'=> $activities->lastItem(),
+            ],
+            'activities'=>$activities,
+
+        ];
+    }
+
+    public function store(Request $request)
+    {
+        $act= new Activity();
+        $act->key       = $request->key;
+        $act->activity  = $request->activity;
+        $act->save();
+    }
+
+    public function update(Request $request)
+    {
+        $act= Activity::findOrFail($request->id);
+        $act->key      = $request->key;
+        $act->activity = $request->activity;
+        $act->save();
+    }
 }

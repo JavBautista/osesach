@@ -63,16 +63,7 @@ class DirectoryController extends Controller
         return view('asignar',['persona_id'=>$persona_id]);
     }
 
-    public function indexWeb(Request $request)
-    {
 
-        $directories = Directory::where('active',1)
-                    ->orderBy('id','desc')
-                    ->paginate(50);
-
-        return view('directory',['directories'=>$directories]);
-
-    }
 
     public function getDirectoriesForAssign(Request $request)
     {
@@ -231,6 +222,40 @@ class DirectoryController extends Controller
     }
 
 
+    public function inicio(){
+        return view('directory');
+    }
+    public function get(Request $request)
+    {
 
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar==''){
+            $directories = Directory::where('active',1)
+                        ->orderBy('id', 'asc')
+                        ->paginate(20);
+        }else{
+            $directories = Directory::where('active',1)
+                        ->where($criterio, 'like', '%'.$buscar.'%')
+                        ->orderBy('id', 'asc')
+                        ->paginate(20);
+        }
+
+        return [
+            'pagination'=>[
+                'total'=> $directories->total(),
+                'current_page'=> $directories->currentPage(),
+                'per_page'=> $directories->perPage(),
+                'last_page'=> $directories->lastPage(),
+                'from'=> $directories->firstItem(),
+                'to'=> $directories->lastItem(),
+            ],
+            'directories'=>$directories,
+
+        ];
+
+
+    }
 
 }

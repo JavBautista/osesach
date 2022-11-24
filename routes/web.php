@@ -45,8 +45,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/personal/active', [App\Http\Controllers\PersonController::class, 'active']);
     Route::put('/personal/inactive', [App\Http\Controllers\PersonController::class, 'inactive']);
 
+    /*ACTIVIDADES*/
+    Route::get('/actividades', [App\Http\Controllers\ActivityController::class, 'inicio']);
+    //Route::get('/actividades/get/all/active', [App\Http\Controllers\ActivityController::class, 'getAllActive']);
+    Route::get('/actividades/get', [App\Http\Controllers\ActivityController::class, 'get']);
+    Route::post('/actividades/store', [App\Http\Controllers\ActivityController::class, 'store']);
+    Route::put('/actividades/update', [App\Http\Controllers\ActivityController::class, 'update']);
+    //Route::put('/actividades/active', [App\Http\Controllers\ActivityController::class, 'active']);
+    //Route::put('/actividades/inactive', [App\Http\Controllers\ActivityController::class, 'inactive']);
+
     /*DIRECTORIO*/
-    Route::get('/directorio', [App\Http\Controllers\DirectoryController::class, 'indexWeb'])->name('index-web');
+    Route::get('/directorio', [App\Http\Controllers\DirectoryController::class, 'inicio']);
+    Route::get('/directorio/get', [App\Http\Controllers\DirectoryController::class, 'get']);
 
     Route::get('/directorio/get-directories-assign', [App\Http\Controllers\DirectoryController::class, 'getDirectoriesForAssign']);
 
@@ -60,4 +70,5 @@ Route::group(['middleware' => 'auth'], function () {
 
     //AVANCES
     Route::get('/avance-general', [App\Http\Controllers\ReportsController::class, 'avanceGeneral']);
+    Route::get('/avance-personal', [App\Http\Controllers\ReportsController::class, 'avancePersonal']);
 });#./Middlware AUTH

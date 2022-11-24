@@ -10,23 +10,29 @@
                 <a href="personal" class="nav-link"> Personal </a>
             </li>
             <li class="nav-item">
+                <a href="actividades" class="nav-link"> Actividades </a>
+            </li>
+            <li class="nav-item">
                 <a href="directorio" class="nav-link"> Directorio </a>
             </li>
             <li class="nav-item">
                 <a href="asignacion" class="nav-link"> Asignación </a>
             </li>
 
-<!--
+            <!--
             <li class="nav-item">
                 <a href="#" class="nav-link"> Item 1 </a>
             </li>
-        -->
+            -->
 
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-bag"></i> Reportes</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
                         <a class="nav-link" href="avance-general"> Avance general</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="avance-personal"> Avance de personal</a>
                     </li>
                 </ul>
             </li>

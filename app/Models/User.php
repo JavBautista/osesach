@@ -77,4 +77,8 @@ class User extends Authenticatable
         return false;
     }
 
+    public function person(){
+        return $this->belongsTo(Person::class);
+    }
+
 }
