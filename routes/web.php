@@ -28,6 +28,8 @@ Route::get('/test', function(){
     return view('test');
 });
 
+Route::post('/test/upload', [App\Http\Controllers\HomeController::class, 'upload'])->name('test.upload');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/passwords/reset', [App\Http\Controllers\HomeController::class,'passwordReset'])->name('password.reset');
     Route::post('/user/passwords/update', [App\Http\Controllers\HomeController::class,'updatePassword'])->name('password.update');

@@ -39,14 +39,53 @@ class DirectoryController extends Controller
     public function getApiDirectoriesAgent(Request $request)
     {
         //if(!$request->ajax()) return redirect('/');
+        $visitados   =   isset($request->visitados)?$request->visitados:0;
         $agente_id   =   $request->agente_id;
-        $directories = Directory::where('active',1)
+
+        $cond_visitados= ($visitados)?'<>':'=';
+
+        $buscar = $request->buscar;
+        if($buscar==''){
+            $directories = Directory::where('active',1)
                     ->where('agent_id',$agente_id)
                     ->where('asignada',1)
+                    ->where('status_id',$cond_visitados,0)
                     ->orderBy('codigo_postal','ASC')
                     ->orderBy('nombre_vialidad','ASC')
-                    ->paginate(100);
+                    ->paginate(50);
+        }else{
+            $directories = Directory::where('active',1)
+                    ->where('agent_id',$agente_id)
+                    ->where('asignada',1)
+                    ->where('status_id',$cond_visitados,0)
+                    ->where('nombre_unidad', 'like', '%'.$buscar.'%')
+                    ->orderBy('codigo_postal','ASC')
+                    ->orderBy('nombre_vialidad','ASC')
+                    ->paginate(50);
+        }
+        return $directories;
+    }//.getDirectoriesAgent()
 
+    public function getApiResumenAgent(Request $request)
+    {
+        $agente_id   =   $request->agente_id;
+
+        $total_directories =  DB::table('directories')->count();
+        $total_visits =  DB::table('visits')->count();
+
+        $total_directories_asignadas =  DB::table('directories')->where('asignada',1)->count();
+
+        $total_directories_trabajadas =  DB::table('directories')
+                                        ->where('asignada',1)
+                                        ->where('status_id','>','0')
+                                        ->count();
+
+        return view('reports.avance_general',[
+            'total_visits'=>$total_visits,
+            'total_directories'=>$total_directories,
+            'total_directories_asignadas'=>$total_directories_asignadas,
+            'total_directories_trabajadas'=>$total_directories_trabajadas,
+        ]);
 
         return $directories;
     }//.getDirectoriesAgent()

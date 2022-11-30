@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 use App\Models\User;
 
 class HomeController extends Controller
@@ -22,6 +24,30 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function upload(Request $request){
+
+        //dd($request);
+        if($request->hasFile('test_image')){
+            //$product = Product::find($request->product_id);
+            //$file = $product->image;
+            /*if($file){
+                $existe = Storage::disk('public')->exists($file);
+                if($existe){
+                    Storage::disk('public')->delete($file);
+                }
+            }*/
+            //$product->image = $request->file('main_image')->store('products', 'public');
+            $request->file('test_image')->store('testimage', 'public');
+
+            Session::flash('alert', 'Imagen actualizada exitosamente ');
+            Session::flash('alert-class', 'alert-success');
+            return redirect("/test");
+        }else{
+            Session::flash('alert', 'No se recibio ninguna imagen en el input file. ');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect("/test");
+        }
+    }
 
     /**
      * Show the application dashboard.

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Visit;
 use App\Models\Directory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 
 class VisitController extends Controller
 {
@@ -15,11 +17,25 @@ class VisitController extends Controller
         return $visits;
     }
 
+    public function uploadImage(Request $request){
+
+        $request->file('test_image')->store('testimage', 'public');
+        return response()->json([
+            'ok'=>true,
+            'result' => 'test img'
+        ]);
+
+    }
+
     public function getAvance(Request $request)
     {
+        $directory_id=$request->directory_id;
         $person_id=$request->person_id;
+
         $visits = Visit::with('directory')
+                    ->with('status')
                     ->where('user_id',$person_id)
+                    ->where('directory_id',$directory_id)
                     ->orderBy('id','desc')
                     ->paginate(500);
         return $visits;

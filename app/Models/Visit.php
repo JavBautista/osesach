@@ -13,4 +13,8 @@ class Visit extends Model
     public function directory(){
         return $this->belongsTo(Directory::class);
     }
+
+    public function status(){
+        return $this->belongsTo(VisitingStatus::class);
+    }
 }

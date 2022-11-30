@@ -24,6 +24,7 @@ Route::get('directory','App\Http\Controllers\DirectoryController@index');
 Route::get('directory/buscar','App\Http\Controllers\DirectoryController@buscar');
 
 Route::get('directory/agent-asignacion','App\Http\Controllers\DirectoryController@getApiDirectoriesAgent');
+Route::get('directory/agent-resumen-avance','App\Http\Controllers\DirectoryController@getApiResumenAgent');
 
 Route::post('directory/store','App\Http\Controllers\DirectoryController@store');
 Route::post('directory/update','App\Http\Controllers\DirectoryController@update');
@@ -34,6 +35,8 @@ Route::post('visit/store','App\Http\Controllers\VisitController@store');
 Route::get('activities/get','App\Http\Controllers\ActivityController@index');
 
 Route::get('visit/get/avance','App\Http\Controllers\VisitController@getAvance');
+
+Route::post('visit/upload', 'App\Http\Controllers\VisitController@uploadImage');
 
 
 
