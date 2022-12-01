@@ -38,6 +38,8 @@ Route::get('visit/get/avance','App\Http\Controllers\VisitController@getAvance');
 
 Route::post('visit/upload', 'App\Http\Controllers\VisitController@uploadImage');
 
+Route::get('company/get/info','App\Http\Controllers\CompanyController@getInformation');
+Route::get('person/get/info','App\Http\Controllers\PersonController@getPersonaInformation');
 
 
 Route::group([

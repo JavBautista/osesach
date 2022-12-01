@@ -155,4 +155,11 @@ class PersonController extends Controller
         $person->active=0;
         $person->save();
     }
+
+    public function getPersonaInformation(Request $request){
+
+        $persona_id = $request->persona_id;
+        $persona = Person::findOrFail($persona_id);
+        return $persona;
+    }
 }

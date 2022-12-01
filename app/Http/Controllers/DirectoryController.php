@@ -69,25 +69,41 @@ class DirectoryController extends Controller
     public function getApiResumenAgent(Request $request)
     {
         $agente_id   =   $request->agente_id;
+        $asignadas=0;
+        $trabajadas=0;
+        $faltantes=0;
+        $porcentaje_avance=0;
+        $value_progress_bar=0;
 
-        $total_directories =  DB::table('directories')->count();
-        $total_visits =  DB::table('visits')->count();
+        $asignadas =    DB::table('directories')->where('asignada',1)->where('agent_id',$agente_id)->count();
+        if($asignadas){
 
-        $total_directories_asignadas =  DB::table('directories')->where('asignada',1)->count();
+            $trabajadas =   DB::table('directories')
+                            ->where('asignada',1)
+                            ->where('agent_id',$agente_id)
+                            ->where('status_id','>',0)
+                            ->count();
 
-        $total_directories_trabajadas =  DB::table('directories')
-                                        ->where('asignada',1)
-                                        ->where('status_id','>','0')
-                                        ->count();
+            $faltantes =   DB::table('directories')
+                            ->where('asignada',1)
+                            ->where('agent_id',$agente_id)
+                            ->where('status_id','=',0)
+                            ->count();
 
-        return view('reports.avance_general',[
-            'total_visits'=>$total_visits,
-            'total_directories'=>$total_directories,
-            'total_directories_asignadas'=>$total_directories_asignadas,
-            'total_directories_trabajadas'=>$total_directories_trabajadas,
+            $porcentaje_avance= ($trabajadas*100/$asignadas);
+            $porcentaje_avance=number_format($porcentaje_avance,2);
+            $value_progress_bar=$porcentaje_avance/100;
+            $value_progress_bar=number_format($value_progress_bar,2);
+
+        }
+        return response()->json([
+            'ok'=>true,
+            'asignadas' => $asignadas,
+            'trabajadas' => $trabajadas,
+            'faltantes' => $faltantes,
+            'porcentaje_avance' => $porcentaje_avance,
+            'value_progress_bar' => $value_progress_bar,
         ]);
-
-        return $directories;
     }//.getDirectoriesAgent()
 
 
