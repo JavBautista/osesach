@@ -41,6 +41,13 @@ Route::post('visit/upload', 'App\Http\Controllers\VisitController@uploadImage');
 Route::get('company/get/info','App\Http\Controllers\CompanyController@getInformation');
 Route::get('person/get/info','App\Http\Controllers\PersonController@getPersonaInformation');
 
+Route::get('person/get/agentes','App\Http\Controllers\PersonController@getApiAgentes');
+Route::get('person/get/supervisores','App\Http\Controllers\PersonController@getApiSupervisores');
+
+Route::get('conversations/get/supervisor','App\Http\Controllers\ConversationController@getApiConversationsSupervisor');
+Route::get('conversations/get/agent','App\Http\Controllers\ConversationController@getApiConversationsAgent');
+
+Route::post('message/store','App\Http\Controllers\MessageController@store');
 
 Route::group([
     'prefix' => 'auth'

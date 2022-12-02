@@ -162,4 +162,31 @@ class PersonController extends Controller
         $persona = Person::findOrFail($persona_id);
         return $persona;
     }
+
+
+    public function getApiSupervisores(){
+
+        $supervisores = DB::table('people')
+                        ->select('people.*','roles.description')
+                        ->leftJoin('users', 'users.person_id', '=', 'people.id')
+                        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->where('users.role_id',4)
+                        ->where('people.active',1)
+                        ->orderBy('people.id', 'desc')
+                        ->paginate(10);
+        return $supervisores;
+    }
+
+    public function getApiAgentes(){
+
+        $supervisores = DB::table('people')
+                        ->select('people.*','roles.description')
+                        ->leftJoin('users', 'users.person_id', '=', 'people.id')
+                        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->where('users.role_id',3)
+                        ->where('people.active',1)
+                        ->orderBy('people.id', 'desc')
+                        ->paginate(20);
+        return $supervisores;
+    }
 }
