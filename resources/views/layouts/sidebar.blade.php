@@ -4,9 +4,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/admin"><i class="icon-home"></i> Home</a>
             </li>
-            <li class="nav-item">
+            <!--<li class="nav-item">
                 <a href="tipos-usuarios" class="nav-link"> Tipos </a>
-            </li><li class="nav-item">
+            </li>-->
+            <li class="nav-item">
                 <a href="personal" class="nav-link"> Personal </a>
             </li>
             <li class="nav-item">
@@ -17,6 +18,9 @@
             </li>
             <li class="nav-item">
                 <a href="asignacion" class="nav-link"> Asignación </a>
+            </li>
+            <li class="nav-item">
+                <a href="descargas" class="nav-link"> Descargas </a>
             </li>
 
             <!--

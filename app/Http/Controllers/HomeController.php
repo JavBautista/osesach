@@ -106,4 +106,8 @@ class HomeController extends Controller
         return Auth::guard();
     }
 
+    public function descargas(){
+        return view('descargas');
+    }
+
 }

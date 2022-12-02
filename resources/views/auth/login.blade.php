@@ -8,6 +8,7 @@
           <form class="form-horizontal was-validated" method="POST" action="{{ route('login') }}">
             @csrf
             <div class="card-body">
+                <img src="{{ asset('images/logo.jpeg') }}" width="80%" alt="Logo San Andres Cholula">
                 <h1>Acceder</h1>
                 <p class="text-muted">Control de acceso al sistema</p>
 
@@ -56,9 +57,14 @@
 
         <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
             <div class="card-body text-center">
-              <div>
-                <h2>OSESACH</h2>
+              <div class="container">
+
+                <h2>OSESACH v1.0.0</h2>
+
               </div>
+            </div>
+            <div class="card-fotter text-center">
+                <p>2022 Ayuntamiento de San Andrés Cholula <br> Todos los derechos reservados.</p>
             </div>
         </div>
 

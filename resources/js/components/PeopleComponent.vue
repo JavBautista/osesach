@@ -12,19 +12,34 @@
             <div class="card-body">
                 <div class="form-group row">
                     <div class="col-md-6">
-                    <div class="input-group">
-                        <select class="form-control col-md-3" v-model="criterio">
-                            <option value="description">Descripción</option>
+                        <select class="form-select col-md-3" v-model="filtro_tipo">
+                            <option value="todos">Todos</option>
+                            <option value="agentes">Agentes</option>
+                            <option value="supervisores">Supervidores</option>
+                            <option value="admin">Administrativos</option>
                         </select>
-                        <input type="text" v-model="buscar" class="form-control" placeholder="Texto a buscar" @keyup.enter="loadPersonal(1,buscar,criterio)">
-                        <button type="submit" @click="loadPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
                     </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <select class="form-control col-md-3" v-model="criterio">
+                                <option value="name">Nombre</option>
+                                <option value="address">Dirección</option>
+                                <option value="movil">Teléfono</option>
+                                <option value="email">Email</option>
+                            </select>
+                            <input type="text" v-model="buscar" class="form-control" placeholder="Texto a buscar" @keyup.enter="loadPersonal(1,buscar,criterio, filtro_tipo)">
+                            <button type="submit" @click="loadPersonal(1,buscar,criterio,filtro_tipo)" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
+                        </div>
                     </div>
                 </div>
                 <div class="container-fluid">
                     <table class="table table-bordered table-striped table-sm">
                         <thead>
                             <tr>
+                                <th>&nbsp;</th>
+                                <th>Estatus</th>
                                 <th>Nombre</th>
                                 <th>Tipo</th>
                                 <th>Direccion</th>
@@ -33,11 +48,23 @@
                                 <th>Fecha ingreso</th>
                                 <th>Fecha salida</th>
                                 <th>Observaciones</th>
-                                <th>OPCIONES</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="personal in arrayPersonal" :key="personal.id">
+                                <td>
+                                    <button type="button" class="btn btn-primary" @click="abrirModal('personal','ver_datos', personal)" title="Editar"><i class="bi bi-eye"></i></button>
+
+                                    <button type="button" class="btn btn-info" @click="abrirModal('personal','actualizar_datos', personal)" title="Editar"><i class="bi bi-pencil-square"></i></button>
+
+                                    <button v-if="personal.active" type="button" class="btn btn-warning" @click="editInactive(personal.id)" title="Desactivar"> <i class="bi bi-hand-thumbs-down"></i></button>
+
+                                    <button v-else type="button" class="btn btn-secondary" @click="editActive(personal.id)" title="Activar"> <i class="bi bi-hand-thumbs-up"></i></button>
+                                </td>
+                                <td>
+                                    <span v-if="personal.active" class="badge bg-success">Activo</span>
+                                    <span v-else class="badge bg-danger">Baja</span>
+                                </td>
                                 <td v-text="personal.name"></td>
                                 <td v-text="personal.description"></td>
                                 <td v-text="personal.address"></td>
@@ -46,17 +73,6 @@
                                 <td v-text="personal.date_admission"></td>
                                 <td v-text="personal.date_termination"></td>
                                 <td v-text="personal.observations"></td>
-                                <td>
-                                    <span v-if="personal.active" class="badge bg-success">Activo</span>
-                                    <span v-else class="badge bg-danger">Baja</span>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-outline-info" @click="abrirModal('personal','actualizar_datos', personal)" title="Editar"><i class="bi bi-pencil-square"></i></button>
-
-                                    <button v-if="personal.active" type="button" class="btn btn-outline-warning" @click="editInactive(personal.id)" title="Desactivar"> <i class="bi bi-hand-thumbs-down"></i></button>
-
-                                    <button v-else type="button" class="btn btn-outline-secondary" @click="editActive(personal.id)" title="Activar"> <i class="bi bi-hand-thumbs-up"></i></button>
-                                </td>
                             </tr>
                         </tbody>
 
@@ -172,6 +188,61 @@
 
                         </div>
                         <!--./tipoAccion==1 o 2: Agregar o ACtualizar-->
+                        <!--tipoAccion==3 Ver-->
+                        <div v-if="tipoAccion==3">
+
+
+                            <div class="form-group row mb-2">
+                                <label class="col-md-3 3ol-form-label text-md-right" for="role_user"><strong class="text text-danger">*</strong>Tipo Usuario</label>
+                                <div class="col-sm-9">
+                                  <select class="form-control" v-model="role_id" readonly>
+                                      <option v-for="role in arrayRolesUser" :key="role.id" :value="role.id"   v-text="role.description"></option>
+                                  </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row mb-2">
+                                <label for="email" class="col-md-3 3ol-form-label text-md-right"><strong class="text text-danger">*</strong>Email</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" v-model="email" placeholder="Email" readonly>
+                                </div>
+                            </div>
+
+
+                            <hr>
+                            <div class="form-group row">
+                                <label for="date" class="col-md-3 col-form-label text-md-right">
+                                    <strong class="text text-danger">*</strong>Fecha de ingreso
+                                </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" v-model="date_admission" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name"><strong class="text text-danger">*</strong>Nombre</label>
+                                <input type="text" class="form-control" v-model="name" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Dirección</label>
+                                <input type="text" class="form-control" v-model="address" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="movil">Teléfono</label>
+                                <input type="text" class="form-control" v-model="movil" readonly>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="observations">Observaciones</label>
+                                <input type="text" class="form-control" v-model="observations" readonly>
+                            </div>
+
+                        </div>
+                        <!--./tipoAccion==3 Ver-->
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -210,7 +281,8 @@
                   'to':0
               },
               offset:3,
-              criterio:'description',
+              criterio:'name',
+              filtro_tipo:'todos',
               buscar:'',
 
               personal_id:0,
@@ -282,9 +354,9 @@
                     // always executed
                   });
             },
-            loadPersonal(page,buscar,criterio){
+            loadPersonal(page,buscar,criterio,filtro_tipo){
                 let me=this;
-                var url = '/personal/get?page='+page+'&buscar='+buscar+'&criterio='+criterio;
+                var url = '/personal/get?page='+page+'&buscar='+buscar+'&criterio='+criterio+'&filtro_tipo='+filtro_tipo;
                 axios.get(url).then(function (response){
                     console.log(response)
                     let respuesta = response.data;
@@ -302,7 +374,7 @@
             cambiarPagina(page,buscar,criterio){
                 let me = this;
                 me.pagination.current_page = page;
-                me.loadPersonal(page,buscar,criterio);
+                me.loadPersonal(page,buscar,criterio,filtro_tipo);
             },
             validarDatos(accion){
                 this.error=0;
@@ -354,7 +426,7 @@
                 }).then(function (response){
                   //console.log(response)
                   me.cerrarModal();
-                  me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio)
+                  me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio, me.filtro_tipo)
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -375,7 +447,7 @@
                 }).then(function (response){
                   //console.log(response)
                   me.cerrarModal();
-                  me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio)
+                  me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio, me.filtro_tipo)
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -404,7 +476,7 @@
                     axios.put('/personal/active',{
                         'id': id
                     }).then(function (response){
-                        me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio);
+                        me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio,me.filtro_tipo);
                         swalWithBootstrapButtons.fire(
                           'Activo',
                           'El registro ha sido actualizado con exito.',
@@ -439,7 +511,7 @@
                     axios.put('/personal/inactive',{
                         'id': id
                     }).then(function (response){
-                        me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio);
+                        me.loadPersonal(me.pagination.current_page,me.buscar,me.criterio,me.filtro_tipo);
                         swalWithBootstrapButtons.fire(
                           'Inactivo',
                           'El registro ha sido actualizado con exito.',
@@ -464,6 +536,8 @@
                                 this.address='';
                                 this.movil='';
                                 this.email='';
+                                this.password='';
+                                this.password_confirmation='';
                                 this.date_admission='';
                                 this.observations='';
                                 break;
@@ -472,6 +546,20 @@
                                 this.modal=1;
                                 this.tipoAccion =2;
                                 this.tituloModal='Actualizar';
+                                this.personal_id= data['id'];
+                                this.name= data['name'];
+                                this.address= data['address'];
+                                this.movil= data['movil'];
+                                this.email= data['email'];
+                                this.date_admission= data['date_admission'];
+                                this.observations= data['observations'];
+                                break;
+                            }
+                            case 'ver_datos':{
+                                this.modal=1;
+                                this.tipoAccion =3;
+                                this.tituloModal='Ver';
+
                                 this.personal_id= data['id'];
                                 this.name= data['name'];
                                 this.address= data['address'];
@@ -492,7 +580,7 @@
             },
         },
         mounted() {
-            this.loadPersonal(1,'','description');
+            this.loadPersonal(1,'','name','todos');
             this.loadRolesUser();
         }
     }

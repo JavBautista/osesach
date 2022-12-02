@@ -22,6 +22,7 @@ class PersonController extends Controller
         if(!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
+        $filtro_tipo = $request->filtro_tipo;
 
         if($buscar==''){
             $people = DB::table('people')
@@ -36,7 +37,7 @@ class PersonController extends Controller
                         ->leftJoin('users', 'users.person_id', '=', 'people.id')
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                         //->leftJoin('type_users', 'people.id', '=', 'type_users.id')
-                        ->where($criterio, 'like', '%'.$buscar.'%')
+                        ->where('people.'.$criterio, 'like', '%'.$buscar.'%')
                         ->orderBy('people.id','desc')
                         ->paginate(20);
         }
