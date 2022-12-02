@@ -27,6 +27,7 @@
                     <table class="table table-bordered table-striped table-sm">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>#id_denue</th>
                                 <th>clee</th>
                                 <th>nombre_unidad</th>
@@ -73,6 +74,11 @@
                         </thead>
                         <tbody>
                             <tr v-for="directory in arrayDirectories" :key="directory.id">
+                                <td>
+                                    <a class="link bg-primary" target="_blank" :href="'http://maps.google.com/maps?saddr='+directory.latitud+','+directory.longitud">
+                                        <i class="bi bi-geo-alt">Abrir</i>
+                                    </a>
+                                </td>
                                 <td v-text="directory.id_denue"></td>
                                 <td v-text="directory.clee"></td>
                                 <td v-text="directory.nombre_unidad"></td>

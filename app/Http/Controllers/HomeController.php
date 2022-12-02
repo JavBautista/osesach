@@ -110,4 +110,8 @@ class HomeController extends Controller
         return view('descargas');
     }
 
+    public function importacion(){
+        return view('importacion');
+    }
+
 }

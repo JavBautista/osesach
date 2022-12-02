@@ -75,4 +75,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/avance-personal', [App\Http\Controllers\ReportsController::class, 'avancePersonal']);
 
     Route::get('/descargas', [App\Http\Controllers\HomeController::class, 'descargas']);
+
+    Route::get('/importacion', [App\Http\Controllers\HomeController::class, 'importacion']);
 });#./Middlware AUTH

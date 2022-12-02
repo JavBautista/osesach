@@ -20,6 +20,9 @@
                 <a href="asignacion" class="nav-link"> Asignación </a>
             </li>
             <li class="nav-item">
+                <a href="importacion" class="nav-link"> Importación </a>
+            </li>
+            <li class="nav-item">
                 <a href="descargas" class="nav-link"> Descargas </a>
             </li>
 
