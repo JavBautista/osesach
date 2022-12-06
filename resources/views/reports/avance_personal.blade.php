@@ -4,7 +4,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <i class="fa fa-align-justify"></i> Actividades
+            <i class="fa fa-align-justify"></i> Avance
             <button type="button" class="btn btn-success float-rigth">
                 <i class="bi bi-file-earmark-excel"></i>&nbsp;Exportar
             </button>
@@ -23,7 +23,7 @@
                 <tbody>
                     @foreach($personal as $persona)
                     <tr>
-
+                        <td><a class="btn btn-primary" href="/avance-personal/persona/{{$persona['persona_id']}}"><i class="bi bi-box-arrow-up-right"></i></a></td>
                         <td>{{$persona['persona_id']}}</td>
                         <td>{{$persona['persona_nombre']}}</td>
                         <td>{{$persona['asignado']}}</td>

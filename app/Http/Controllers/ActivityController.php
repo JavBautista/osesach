@@ -53,6 +53,11 @@ class ActivityController extends Controller
         ];
     }
 
+    public function loadAllActivities(){
+        $activities= Activity::all();
+        return $activities;
+    }
+
     public function store(Request $request)
     {
         $act= new Activity();

@@ -5812,6 +5812,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       arrayDirectories: [],
+      arrayActividades: [],
+      arrayLocalidades: [],
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -5820,12 +5822,19 @@ __webpack_require__.r(__webpack_exports__);
         'from': 0,
         'to': 0
       },
+      actividad_key: 0,
+      filtro_localidad: 'TODOS',
+      filtro_tam_est: 0,
+      filtro_tipo_asentamiento: 'TODOS',
+      filtro_incorporacion: 'TODOS',
       offset: 3,
       criterio: 'nombre_unidad',
       buscar: '',
+      filtro_telefono: 'TODOS',
+      filtro_email: 'TODOS',
+      filtro_pagina_web: 'TODOS',
       directory_id: 0,
       nombre_vialidad: '',
-      errors: [],
       modal: 0,
       tituloModal: '',
       tipoAccion: 0,
@@ -5866,9 +5875,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    loadDirectory: function loadDirectory(page, buscar, criterio) {
+    loadDirectory: function loadDirectory(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web) {
       var me = this;
-      var url = '/directorio/get?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+      var url = '/directorio/get?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&actividad_key=' + actividad_key + '&filtro_tam_est=' + filtro_tam_est + '&filtro_tipo_asentamiento=' + filtro_tipo_asentamiento + '&filtro_localidad=' + filtro_localidad + '&filtro_incorporacion=' + filtro_incorporacion + '&filtro_telefono=' + filtro_telefono + '&filtro_email=' + filtro_email + '&filtro_pagina_web=' + filtro_pagina_web;
+      console.log(url);
       axios.get(url).then(function (response) {
         console.log(response);
         var respuesta = response.data;
@@ -5880,10 +5890,10 @@ __webpack_require__.r(__webpack_exports__);
       })["finally"](function () {// always executed
       });
     },
-    cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+    cambiarPagina: function cambiarPagina(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web) {
       var me = this;
       me.pagination.current_page = page;
-      me.loadDirectory(page, buscar, criterio);
+      me.loadDirectory(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web);
     },
     validarDatos: function validarDatos() {
       this.error = 0;
@@ -5903,7 +5913,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         //console.log(response)
         me.cerrarModal();
-        me.loadDirectory(me.pagination.current_page, me.buscar, me.criterio);
+        me.loadDirectory(me.pagination.current_page, me.buscar, me.criterio, me.actividad_key, me.filtro_tam_est, me.filtro_tipo_asentamiento, me.filtro_localidad, me.filtro_incorporacion, me.filtro_telefono, me.filtro_email, me.filtro_pagina_web);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -5920,7 +5930,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         //console.log(response)
         me.cerrarModal();
-        me.loadDirectory(me.pagination.current_page, me.buscar, me.criterio);
+        me.loadDirectory(me.pagination.current_page, me.buscar, me.criterio, me.actividad_key, me.filtro_tam_est, me.filtro_tipo_asentamiento, me.filtro_localidad, me.filtro_incorporacion, me.filtro_telefono, me.filtro_email, me.filtro_pagina_web);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -5959,10 +5969,43 @@ __webpack_require__.r(__webpack_exports__);
     cerrarModal: function cerrarModal() {
       this.modal = 0;
       this.tituloModal = '';
+    },
+    loadAllActividades: function loadAllActividades() {
+      var me = this;
+      var url = '/actividades/all/get';
+      axios.get(url).then(function (response) {
+        //console.log(response)
+        me.arrayActividades = response.data; //console.log(me.arrayActividades);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      })["finally"](function () {// always executed
+      });
+    },
+    loadAllLocaliades: function loadAllLocaliades() {
+      var me = this;
+      var url = '/localidades/all/get';
+      axios.get(url).then(function (response) {
+        console.log(response);
+        me.arrayLocalidades = response.data;
+        console.log(me.arrayLocalidades);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      })["finally"](function () {// always executed
+      });
+    },
+    exportar: function exportar(buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web) {
+      var me = this;
+      var url = 'directory/export?buscar=' + buscar + '&criterio=' + criterio + '&actividad_key=' + actividad_key + '&filtro_tam_est=' + filtro_tam_est + '&filtro_tipo_asentamiento=' + filtro_tipo_asentamiento + '&filtro_localidad=' + filtro_localidad + '&filtro_incorporacion=' + filtro_incorporacion + '&filtro_telefono=' + filtro_telefono + '&filtro_email=' + filtro_email + '&filtro_pagina_web=' + filtro_pagina_web;
+      console.log('Exportar:' + url);
+      window.open(url);
     }
   },
   mounted: function mounted() {
-    this.loadDirectory(1, '', 'nombre_unidad');
+    this.loadDirectory(1, '', 'nombre_unidad', 0, 0, 'TODOS', 'TODOS', 'TODOS', 'TODOS', 'TODOS', 'TODOS');
+    this.loadAllActividades();
+    this.loadAllLocaliades();
   }
 });
 
@@ -7500,6 +7543,499 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.actividad_key,
+      expression: "actividad_key"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.actividad_key = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _vm._l(_vm.arrayActividades, function (act) {
+    return _c("option", {
+      key: act.key,
+      domProps: {
+        value: act.key
+      }
+    }, [_vm._v(_vm._s(act.activity) + " - " + _vm._s(act.key) + "  ")]);
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Actividad económica")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_tam_est,
+      expression: "filtro_tam_est"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_tam_est = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("Todos los tamaños")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "1"
+    }
+  }, [_vm._v("0 a 5 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2"
+    }
+  }, [_vm._v("6 a 10 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "3"
+    }
+  }, [_vm._v("11 a 30 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "4"
+    }
+  }, [_vm._v("31 a 50 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "5"
+    }
+  }, [_vm._v("51 a 100 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "6"
+    }
+  }, [_vm._v("101 a 250 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "7"
+    }
+  }, [_vm._v("251 y más personas")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Tamaño del estabecimiento")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_tipo_asentamiento,
+      expression: "filtro_tipo_asentamiento"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_tipo_asentamiento = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "COLONIA"
+    }
+  }, [_vm._v("COLONIA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "FRACCIONAMIENTO"
+    }
+  }, [_vm._v("FRACCIONAMIENTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "LOCALIDAD"
+    }
+  }, [_vm._v("LOCALIDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "PUEBLO"
+    }
+  }, [_vm._v("PUEBLO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "BARRIO"
+    }
+  }, [_vm._v("BARRIO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RESIDENCIAL"
+    }
+  }, [_vm._v("RESIDENCIAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CONJUNTO HABITACIONAL"
+    }
+  }, [_vm._v("CONJUNTO HABITACIONAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "ZONA COMERCIAL"
+    }
+  }, [_vm._v("ZONA COMERCIAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "MANZANA"
+    }
+  }, [_vm._v("MANZANA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "OTRO (ESPECIFIQUE)"
+    }
+  }, [_vm._v("OTRO (ESPECIFIQUE)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "EXHACIENDA"
+    }
+  }, [_vm._v("EXHACIENDA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CIUDAD"
+    }
+  }, [_vm._v("CIUDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "HACIENDA"
+    }
+  }, [_vm._v("HACIENDA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RINCONADA"
+    }
+  }, [_vm._v("RINCONADA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "AEROPUERTO"
+    }
+  }, [_vm._v("AEROPUERTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RANCHERIA"
+    }
+  }, [_vm._v("RANCHERIA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "UNIDAD HABITACIONAL"
+    }
+  }, [_vm._v("UNIDAD HABITACIONAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "PRIVADA"
+    }
+  }, [_vm._v("PRIVADA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "NINGUNO"
+    }
+  }, [_vm._v("NINGUNO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "COTO"
+    }
+  }, [_vm._v("COTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "UNIDAD"
+    }
+  }, [_vm._v("UNIDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CONDOMINIO"
+    }
+  }, [_vm._v("CONDOMINIO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "ZONA FEDERAL"
+    }
+  }, [_vm._v("ZONA FEDERAL")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Tipo asentamiento")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_localidad,
+      expression: "filtro_localidad"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_localidad = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _vm._l(_vm.arrayLocalidades, function (loc) {
+    return _c("option", {
+      key: loc.id,
+      domProps: {
+        value: loc.description,
+        textContent: _vm._s(loc.description)
+      }
+    });
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Localidad")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_incorporacion,
+      expression: "filtro_incorporacion"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_incorporacion = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2010"
+    }
+  }, [_vm._v("2010")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2011"
+    }
+  }, [_vm._v("2011")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2012"
+    }
+  }, [_vm._v("2012")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2013"
+    }
+  }, [_vm._v("2013")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2014"
+    }
+  }, [_vm._v("2014")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2015"
+    }
+  }, [_vm._v("2015")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2016"
+    }
+  }, [_vm._v("2016")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2017"
+    }
+  }, [_vm._v("2017")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2018"
+    }
+  }, [_vm._v("2018")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2019"
+    }
+  }, [_vm._v("2019")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2020"
+    }
+  }, [_vm._v("2020")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2021"
+    }
+  }, [_vm._v("2021")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2022"
+    }
+  }, [_vm._v("2022")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2023"
+    }
+  }, [_vm._v("2023")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Año incorporación")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_telefono,
+      expression: "filtro_telefono"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_telefono = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Teléfono")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_email,
+      expression: "filtro_email"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_email = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Email")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_pagina_web,
+      expression: "filtro_pagina_web"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_pagina_web = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("Todos")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Sitio Web")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
     staticClass: "col-md-6"
   }, [_c("div", {
     staticClass: "input-group"
@@ -7510,7 +8046,7 @@ var render = function render() {
       value: _vm.criterio,
       expression: "criterio"
     }],
-    staticClass: "form-control col-md-3",
+    staticClass: "form-control",
     on: {
       change: function change($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
@@ -7526,7 +8062,7 @@ var render = function render() {
     attrs: {
       value: "nombre_unidad"
     }
-  }, [_vm._v("CP")]), _vm._v(" "), _c("option", {
+  }, [_vm._v("Unidad")]), _vm._v(" "), _c("option", {
     attrs: {
       value: "codigo_postal"
     }
@@ -7550,43 +8086,53 @@ var render = function render() {
       value: _vm.buscar
     },
     on: {
-      keyup: function keyup($event) {
-        if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
-        return _vm.loadDirectory(1, _vm.buscar, _vm.criterio);
-      },
       input: function input($event) {
         if ($event.target.composing) return;
         _vm.buscar = $event.target.value;
       }
     }
-  }), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-primary",
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("button", {
+    staticClass: "btn btn-info float-end px-4",
     attrs: {
       type: "submit"
     },
     on: {
       click: function click($event) {
-        return _vm.loadDirectory(1, _vm.buscar, _vm.criterio);
+        return _vm.loadDirectory(1, _vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web);
       }
     }
   }, [_c("i", {
     staticClass: "bi bi-search"
-  }), _vm._v(" Buscar")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Filtrar")])])]), _vm._v(" "), _c("div", {
     staticClass: "container-fluid overflow-scroll"
-  }, [_c("table", {
+  }, [_c("h3", [_vm._v("Resultados: " + _vm._s(_vm.pagination.total))]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.exportar(_vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web);
+      }
+    }
+  }, [_c("i", {
+    staticClass: "bi bi-file-earmark-excel"
+  }), _vm._v(" Exportar")]), _vm._v(" "), _c("br"), _c("br"), _vm._v(" "), _c("table", {
     staticClass: "table table-bordered table-striped table-sm"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.arrayDirectories, function (directory) {
     return _c("tr", {
       key: directory.id
     }, [_c("td", [_c("a", {
-      staticClass: "link bg-primary",
+      staticClass: "btn btn-primary",
       attrs: {
         target: "_blank",
-        href: "http://maps.google.com/maps?saddr=" + directory.latitud + "," + directory.longitud
+        href: "https://google.com/maps?q=" + directory.latitud + "," + directory.longitud
       }
     }, [_c("i", {
       staticClass: "bi bi-geo-alt"
-    }, [_vm._v("Abrir")])])]), _vm._v(" "), _c("td", {
+    }), _vm._v(" Abrir\n                                    ")])]), _vm._v(" "), _c("td", {
       domProps: {
         textContent: _vm._s(directory.id_denue)
       }

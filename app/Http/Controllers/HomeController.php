@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class HomeController extends Controller
 {
     /**
@@ -112,6 +115,10 @@ class HomeController extends Controller
 
     public function importacion(){
         return view('importacion');
+    }
+
+    public function testExport(){
+        return Excel::download(new UsersExport, 'users.xlsx');
     }
 
 }

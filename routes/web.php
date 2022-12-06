@@ -49,7 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /*ACTIVIDADES*/
     Route::get('/actividades', [App\Http\Controllers\ActivityController::class, 'inicio']);
-    //Route::get('/actividades/get/all/active', [App\Http\Controllers\ActivityController::class, 'getAllActive']);
+    Route::get('/actividades/all/get', [App\Http\Controllers\ActivityController::class, 'loadAllActivities']);
     Route::get('/actividades/get', [App\Http\Controllers\ActivityController::class, 'get']);
     Route::post('/actividades/store', [App\Http\Controllers\ActivityController::class, 'store']);
     Route::put('/actividades/update', [App\Http\Controllers\ActivityController::class, 'update']);
@@ -74,7 +74,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/avance-general', [App\Http\Controllers\ReportsController::class, 'avanceGeneral']);
     Route::get('/avance-personal', [App\Http\Controllers\ReportsController::class, 'avancePersonal']);
 
+    Route::get('/avance-personal/persona/{persona_id}', [App\Http\Controllers\ReportsController::class, 'avancePersonalPersona']);
+
+    Route::get('/avance-personal/visitas', [App\Http\Controllers\ReportsController::class, 'avancePersonalPersonaVisita']);
+
     Route::get('/descargas', [App\Http\Controllers\HomeController::class, 'descargas']);
 
     Route::get('/importacion', [App\Http\Controllers\HomeController::class, 'importacion']);
+
+    Route::get('example/users/export/', [App\Http\Controllers\HomeController::class, 'testExport']);
+
+    Route::get('/localidades/all/get', [App\Http\Controllers\DirectoryController::class, 'loadAllLocalidades']);
+
+    Route::get('directory/export', [App\Http\Controllers\DirectoryController::class, 'directoryExport']);
+
+
 });#./Middlware AUTH

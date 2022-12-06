@@ -22,9 +22,7 @@
             <li class="nav-item">
                 <a href="importacion" class="nav-link"> Importación </a>
             </li>
-            <li class="nav-item">
-                <a href="descargas" class="nav-link"> Descargas </a>
-            </li>
+
 
             <!--
             <li class="nav-item">
@@ -42,6 +40,10 @@
                         <a class="nav-link" href="avance-personal"> Avance de personal</a>
                     </li>
                 </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="descargas" class="nav-link"> Descargas </a>
             </li>
 
 

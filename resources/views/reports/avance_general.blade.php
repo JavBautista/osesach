@@ -11,6 +11,18 @@
                 </button>
             </div>
             <div class="card-body">
+
+
+                <hr>
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Registros Totales: {{$total_directories}} </h2>
+                        <h2>Registros Asignados: {{$total_directories_asignadas}} </h2>
+                        <h2>Registros Trabajados: {{$total_directories_trabajadas}} </h2>
+                        <h2>Registros Nuevos: {{$nuevas}} </h2>
+                    </div>
+                </div>
+
                 <div class="alert alert-warning text-center" role="alert">
                   <p>Porcentaje</p>
                   @php
@@ -22,27 +34,6 @@
                 <div class="progress">
                   <div class="progress-bar" role="progressbar" style="width: <?=$porcentaje?>%;" aria-valuenow="<?=$porcentaje?>" aria-valuemin="0" aria-valuemax="100"><?=$porcentaje?>%</div>
                 </div>
-                <hr>
-                <table class="table table-bordered table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>TOTAL</th>
-                            <th>Asignados</th>
-                            <th>Trabajados</th>
-                            <th>Visitas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-
-                            <td>{{$total_directories}}</td>
-                            <td>{{$total_directories_asignadas}}</td>
-                            <td>{{$total_directories_trabajadas}}</td>
-                            <td>{{$total_visits}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
 
             </div>
         </div>

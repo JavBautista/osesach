@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Directory;
 use App\Models\Person;
 use App\Models\User;
+use App\Models\Visit;
 
 
 class ReportsController extends Controller
@@ -23,11 +24,16 @@ class ReportsController extends Controller
                                         ->where('status_id','>','0')
                                         ->count();
 
+        $nuevas = DB::table('directories')
+                        ->whereNull('id_denue')
+                        ->count();
+
         return view('reports.avance_general',[
             'total_visits'=>$total_visits,
             'total_directories'=>$total_directories,
             'total_directories_asignadas'=>$total_directories_asignadas,
             'total_directories_trabajadas'=>$total_directories_trabajadas,
+            'nuevas'=>$nuevas,
         ]);
 
     }
@@ -80,5 +86,29 @@ class ReportsController extends Controller
             'personal'=>$personal,
         ]);
 
+    }
+
+
+    public function avancePersonalPersona(Request $request){
+        $persona_id = $request->persona_id;
+        $asignacion = Directory::where('agent_id',$persona_id)->get();
+        return view('reports.avance_personal_persona',[
+            'asignacion'=>$asignacion,
+            'persona_id'=>$persona_id
+        ]);
+    }
+
+    public function avancePersonalPersonaVisita(Request $request){
+        $directory_id = $request->directory_id;
+        $persona_id = $request->persona_id;
+
+        $directory = Directory::findOrFail($directory_id);
+        $visitas   = Visit::where('directory_id',$directory_id)->get();
+
+        return view('reports.avance_personal_persona_visita',[
+            'directory'=>$directory,
+            'visitas'=>$visitas,
+            'persona_id'=>$persona_id
+        ]);
     }
 }
