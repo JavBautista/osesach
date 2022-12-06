@@ -5604,7 +5604,7 @@ __webpack_require__.r(__webpack_exports__);
         'to': 0
       },
       offset: 3,
-      criterio: 'description',
+      criterio: 'name',
       buscar: '',
       show_asignar: 0,
       show_asignacion: 0
@@ -5693,7 +5693,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.loadAgentes(1, '', 'description');
+    this.loadAgentes(1, '', 'name');
   }
 });
 
@@ -7118,9 +7118,9 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
-      value: "description"
+      value: "name"
     }
-  }, [_vm._v("Descripción")])]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Nombre")])]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",

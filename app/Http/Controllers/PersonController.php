@@ -72,16 +72,15 @@ class PersonController extends Controller
                         ->orderBy('people.id', 'desc')
                         ->paginate(20);
         }
-        /*else{
+        else{
             $agents = DB::table('people')
                         ->select('people.*','roles.description')
                         ->leftJoin('users', 'users.person_id', '=', 'people.id')
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-                        //->leftJoin('type_users', 'people.id', '=', 'type_users.id')
-                        ->where($criterio, 'like', '%'.$buscar.'%')
+                        ->where('people.'.$criterio, 'like', '%'.$buscar.'%')
                         ->orderBy('people.id','desc')
                         ->paginate(20);
-        }*/
+        }
 
         return [
             'pagination'=>[

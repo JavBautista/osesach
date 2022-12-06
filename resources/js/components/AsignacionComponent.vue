@@ -15,7 +15,7 @@
                             <div class="col-md-6">
                             <div class="input-group">
                                 <select class="form-control col-md-3" v-model="criterio">
-                                    <option value="description">Descripción</option>
+                                    <option value="name">Nombre</option>
                                 </select>
                                 <input type="text" v-model="buscar" class="form-control" placeholder="Texto a buscar" @keyup.enter="loadAgentes(1,buscar,criterio)">
                                 <button type="submit" @click="loadAgentes(1,buscar,criterio)" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
@@ -107,7 +107,7 @@
                   'to':0
               },
               offset:3,
-              criterio:'description',
+              criterio:'name',
               buscar:'',
 
               show_asignar:0,
@@ -197,7 +197,7 @@
             }
         },
         mounted() {
-            this.loadAgentes(1,'','description');
+            this.loadAgentes(1,'','name');
         }
     }
 </script>
