@@ -296,6 +296,9 @@ class DirectoryController extends Controller
         $filtro_localidad = $request->filtro_localidad;
         $where_localidad=($filtro_localidad=='TODOS')?null:$filtro_localidad;
 
+        $filtro_nombre_asentamiento = $request->filtro_nombre_asentamiento;
+        $where_nombre_asentamiento=($filtro_nombre_asentamiento=='TODOS')?null:$filtro_nombre_asentamiento;
+
         $filtro_incorporacion = $request->filtro_incorporacion;
         $where_incorporacion=($filtro_incorporacion=='TODOS')?null:$filtro_incorporacion;
         //dd($where_tipo_asentamiento);
@@ -338,6 +341,9 @@ class DirectoryController extends Controller
                         })
                         ->when($where_localidad, function ($query, $where_localidad) {
                             return $query->where('localidad','like', $where_localidad);
+                        })
+                        ->when($where_nombre_asentamiento, function ($query, $where_nombre_asentamiento) {
+                            return $query->where('nombre_asentamiento_humano','like', $where_nombre_asentamiento);
                         })
                         ->when($where_incorporacion, function ($query, $where_incorporacion) {
                             return $query->where('fecha_incorporacion_denue','like', $where_incorporacion.'%');
@@ -384,9 +390,37 @@ class DirectoryController extends Controller
                         ->when($where_localidad, function ($query, $where_localidad) {
                             return $query->where('localidad','like', $where_localidad);
                         })
+                        ->when($where_nombre_asentamiento, function ($query, $where_nombre_asentamiento) {
+                            return $query->where('nombre_asentamiento_humano','like', $where_nombre_asentamiento);
+                        })
                         ->when($where_incorporacion, function ($query, $where_incorporacion) {
                             return $query->where('fecha_incorporacion_denue','like', $where_incorporacion.'%');
                         })
+
+                        ->when( ($where_tel == 'sin' ), function ($query) {
+                            return $query->whereNull('numero_telefono')
+                                         ->orWhere('numero_telefono','like', '');
+                        })
+                        ->when( ($where_tel == 'con' ), function ($query) {
+                            return $query->where('numero_telefono','not like', '');
+                        })
+
+                        ->when( ($where_email == 'sin' ), function ($query) {
+                            return $query->whereNull('correo_electronico')
+                                         ->orWhere('correo_electronico','like', '');
+                        })
+                        ->when( ($where_email == 'con' ), function ($query) {
+                            return $query->where('correo_electronico','not like', '');
+                        })
+
+                        ->when( ($where_pagina_web == 'sin' ), function ($query) {
+                            return $query->whereNull('sitio_internet')
+                                         ->orWhere('sitio_internet','like', '');
+                        })
+                        ->when( ($where_pagina_web == 'con' ), function ($query) {
+                            return $query->where('sitio_internet','not like', '');
+                        })
+
                         ->orderBy('id', 'asc')
                         ->paginate(20);
         }
@@ -410,16 +444,34 @@ class DirectoryController extends Controller
     }
 
     public function loadAllLocalidades(Request $request){
-        //dd($request);
-        //$localidades = DB::table('directories')->distinct()->get();
-        //dd($localidades);
-        $localidades=[
-            ['id'=>1,'description'=>'San Bernardino Tlaxcalancingo'],
-            ['id'=>2,'description'=>'San Andrés Cholula'],
-            ['id'=>3,'description'=>'San Luis Tehuiloyoc]an'],
-            ['id'=>4,'description'=>'Cuaxandiatla'],
-        ];
+        $regsbd = Directory::distinct()->orderBy('localidad','ASC')->get('localidad');
+        $localidades=[];
+        $ind=0;
+        foreach($regsbd as $data){
+            $ind++;
+            $tmp=[
+                'id'=>$ind,
+                'description' => $data->localidad
+            ];
+            array_push($localidades,$tmp);
+        }
         return $localidades;
+    }
+
+    public function loadAllAsentamientos(Request $request){
+        $regsbd = Directory::distinct()->orderBy('nombre_asentamiento_humano','ASC')->get('nombre_asentamiento_humano');
+        $asentamientos=[];
+        $ind=0;
+        foreach($regsbd as $data){
+            $ind++;
+            $tmp=[
+                'id'=>$ind,
+                'description' => $data->nombre_asentamiento_humano
+            ];
+            array_push($asentamientos,$tmp);
+        }
+
+        return $asentamientos;
     }
 
     public function directoryExport(Request $request){

@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('example/users/export/', [App\Http\Controllers\HomeController::class, 'testExport']);
 
     Route::get('/localidades/all/get', [App\Http\Controllers\DirectoryController::class, 'loadAllLocalidades']);
+    Route::get('/asentamientos/all/get', [App\Http\Controllers\DirectoryController::class, 'loadAllAsentamientos']);
 
     Route::get('directory/export', [App\Http\Controllers\DirectoryController::class, 'directoryExport']);
 

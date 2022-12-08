@@ -14,7 +14,7 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="actividad_key">
-                                <option value="0">Todos</option>
+                                <option value="0">TODOS</option>
                                 <option v-for="act in arrayActividades" :key="act.key" :value="act.key">{{act.activity}} - {{act.key}}  </option>
                             </select>
                             <label for="floatingSelect">Actividad económica</label>
@@ -35,6 +35,33 @@
                             <label for="floatingSelect">Tamaño del estabecimiento</label>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" v-model="filtro_incorporacion">
+                                <option value="TODOS">TODOS</option>
+                                <option value="2010">2010</option>
+                                <option value="2011">2011</option>
+                                <option value="2012">2012</option>
+                                <option value="2013">2013</option>
+                                <option value="2014">2014</option>
+                                <option value="2015">2015</option>
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                            </select>
+                            <label for="floatingSelect">Año incorporación</label>
+                        </div>
+                    </div>
+
+                </div>
+                <!--./form-group row 1-->
+
+                <div class="form-group row">
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="filtro_tipo_asentamiento">
@@ -66,41 +93,26 @@
                             <label for="floatingSelect">Tipo asentamiento</label>
                         </div>
                     </div>
-                </div>
-                <!--./form-group row 1-->
-
-                <div class="form-group row">
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" v-model="filtro_nombre_asentamiento">
+                                <option value="TODOS">TODOS</option>
+                                <option v-for="ast in arrayAsentamientos" :key="ast.id" :value="ast.description" v-text="ast.description"></option>
+                            </select>
+                            <label for="floatingSelect">Asentamiento</label>
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="filtro_localidad">
-                                <option value="TODOS">Todos</option>
+                                <option value="TODOS">TODOS</option>
                                 <option v-for="loc in arrayLocalidades" :key="loc.id" :value="loc.description" v-text="loc.description"></option>
                             </select>
                             <label for="floatingSelect">Localidad</label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <select class="form-select" id="floatingSelect" v-model="filtro_incorporacion">
-                                <option value="TODOS">Todos</option>
-                                <option value="2010">2010</option>
-                                <option value="2011">2011</option>
-                                <option value="2012">2012</option>
-                                <option value="2013">2013</option>
-                                <option value="2014">2014</option>
-                                <option value="2015">2015</option>
-                                <option value="2016">2016</option>
-                                <option value="2017">2017</option>
-                                <option value="2018">2018</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                            </select>
-                            <label for="floatingSelect">Año incorporación</label>
-                        </div>
-                    </div>
+
+
                 </div>
                 <!--./form-group row 2-->
 
@@ -108,7 +120,7 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="filtro_telefono">
-                                <option value="TODOS">Todos</option>
+                                <option value="TODOS">TODOS</option>
                                 <option value="con">Con</option>
                                 <option value="sin">Sin</option>
 
@@ -119,7 +131,7 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="filtro_email">
-                                <option value="TODOS">Todos</option>
+                                <option value="TODOS">TODOS</option>
                                 <option value="con">Con</option>
                                 <option value="sin">Sin</option>
                             </select>
@@ -129,7 +141,7 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" v-model="filtro_pagina_web">
-                               <option value="TODOS">Todos</option>
+                               <option value="TODOS">TODOS</option>
                                <option value="con">Con</option>
                                <option value="sin">Sin</option>
                             </select>
@@ -152,15 +164,17 @@
                     </div>
                     <div class="col-md-6">
 
-                        <button type="submit" @click="loadDirectory(1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web)" class="btn btn-info float-end px-4"><i class="bi bi-search"></i> Filtrar</button>
+                        <button type="submit" @click="loadDirectory(1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)" class="btn btn-info float-end px-4"><i class="bi bi-search"></i> Filtrar</button>
 
                     </div>
                 </div>
                 <!--./form-group row 4-->
-                <div class="container-fluid overflow-scroll">
+                <div class="container-fluid my-4">
                     <h3>Resultados: {{ pagination.total }}</h3>
                     <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web)" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Exportar</button>
-                    <br><br>
+
+                </div>
+                <div class="container-fluid overflow-scroll">
                     <table class="table table-bordered table-striped table-sm">
                         <thead>
                             <tr>
@@ -339,6 +353,7 @@
               arrayDirectories:[],
               arrayActividades:[],
               arrayLocalidades:[],
+              arrayAsentamientos:[],
               pagination:{
                   'total':0,
                   'current_page':0,
@@ -351,6 +366,7 @@
               filtro_localidad:'TODOS',
               filtro_tam_est:0,
               filtro_tipo_asentamiento:'TODOS',
+              filtro_nombre_asentamiento:'TODOS',
               filtro_incorporacion:'TODOS',
               offset:3,
               criterio:'nombre_unidad',
@@ -403,9 +419,9 @@
            }
         },
         methods:{
-            loadDirectory(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web){
+            loadDirectory(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento){
                 let me=this;
-                var url = '/directorio/get?page='+page+'&buscar='+buscar+'&criterio='+criterio+'&actividad_key='+actividad_key+'&filtro_tam_est='+filtro_tam_est+'&filtro_tipo_asentamiento='+filtro_tipo_asentamiento+'&filtro_localidad='+filtro_localidad+'&filtro_incorporacion='+filtro_incorporacion+'&filtro_telefono='+filtro_telefono+'&filtro_email='+filtro_email+'&filtro_pagina_web='+filtro_pagina_web;
+                var url = '/directorio/get?page='+page+'&buscar='+buscar+'&criterio='+criterio+'&actividad_key='+actividad_key+'&filtro_tam_est='+filtro_tam_est+'&filtro_tipo_asentamiento='+filtro_tipo_asentamiento+'&filtro_localidad='+filtro_localidad+'&filtro_incorporacion='+filtro_incorporacion+'&filtro_telefono='+filtro_telefono+'&filtro_email='+filtro_email+'&filtro_pagina_web='+filtro_pagina_web+'&filtro_nombre_asentamiento='+filtro_nombre_asentamiento;
                 console.log(url);
                 axios.get(url).then(function (response){
                     console.log(response)
@@ -424,7 +440,7 @@
             cambiarPagina(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web){
                 let me = this;
                 me.pagination.current_page = page;
-                me.loadDirectory(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web);
+                me.loadDirectory(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento);
             },
             validarDatos(){
                 this.error=0;
@@ -443,7 +459,7 @@
                 }).then(function (response){
                   //console.log(response)
                   me.cerrarModal();
-                  me.loadDirectory(me.pagination.current_page,me.buscar,me.criterio,me.actividad_key,me.filtro_tam_est,me.filtro_tipo_asentamiento,me.filtro_localidad,me.filtro_incorporacion,me.filtro_telefono,me.filtro_email,me.filtro_pagina_web)
+                  me.loadDirectory(me.pagination.current_page,me.buscar,me.criterio,me.actividad_key,me.filtro_tam_est,me.filtro_tipo_asentamiento,me.filtro_localidad,me.filtro_incorporacion,me.filtro_telefono,me.filtro_email,me.filtro_pagina_web,me.filtro_nombre_asentamiento)
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -459,7 +475,7 @@
                 }).then(function (response){
                   //console.log(response)
                   me.cerrarModal();
-                  me.loadDirectory(me.pagination.current_page,me.buscar,me.criterio, me.actividad_key,me.filtro_tam_est,me.filtro_tipo_asentamiento,me.filtro_localidad,me.filtro_incorporacion,me.filtro_telefono,me.filtro_email,me.filtro_pagina_web)
+                  me.loadDirectory(me.pagination.current_page,me.buscar,me.criterio, me.actividad_key,me.filtro_tam_est,me.filtro_tipo_asentamiento,me.filtro_localidad,me.filtro_incorporacion,me.filtro_telefono,me.filtro_email,me.filtro_pagina_web,me.filtro_nombre_asentamiento)
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -528,6 +544,23 @@
                     // always executed
                   });
             },
+            loadAllAsentamientos(){
+                let me=this;
+                var url = '/asentamientos/all/get';
+                axios.get(url).then(function (response){
+                    console.log('GET ASENT')
+                    //console.log(response)
+                    me.arrayAsentamientos = response.data;
+                    console.log(me.arrayAsentamientos);
+                  })
+                  .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                  })
+                  .finally(function () {
+                    // always executed
+                  });
+            },
             exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web){
                 let me=this;
                 var url = 'directory/export?buscar='+buscar+'&criterio='+criterio+'&actividad_key='+actividad_key+'&filtro_tam_est='+filtro_tam_est+'&filtro_tipo_asentamiento='+filtro_tipo_asentamiento+'&filtro_localidad='+filtro_localidad+'&filtro_incorporacion='+filtro_incorporacion+'&filtro_telefono='+filtro_telefono+'&filtro_email='+filtro_email+'&filtro_pagina_web='+filtro_pagina_web;
@@ -536,9 +569,10 @@
             }
         },
         mounted() {
-            this.loadDirectory(1,'','nombre_unidad',0,0,'TODOS','TODOS','TODOS','TODOS','TODOS','TODOS');
+            this.loadDirectory(1,'','nombre_unidad',0,0,'TODOS','TODOS','TODOS','TODOS','TODOS','TODOS','TODOS');
             this.loadAllActividades();
             this.loadAllLocaliades();
+            this.loadAllAsentamientos();
         }
     }
 </script>
