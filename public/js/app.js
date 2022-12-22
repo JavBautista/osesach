@@ -5557,7 +5557,41 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
       });
-    } //.asignar()
+    },
+    //.asignar()
+    desasignarPorRegistro: function desasignarPorRegistro(directory_id) {
+      var _this2 = this;
+
+      var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Desea desasignar este unico resgistro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this2;
+          axios.put('/asignar/update/desasignar-por-registro', {
+            'directory_id': directory_id
+          }).then(function (response) {
+            console.log('reponse:');
+            console.log(response);
+            me.loadDirectories(1, me.buscar, me.criterio, me.num_registros);
+            swalWithBootstrapButtons.fire('OK', 'Registro desasignado.', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    } //.desasignarPorRegistro()
 
   },
   mounted: function mounted() {
@@ -5714,20 +5748,120 @@ __webpack_require__.r(__webpack_exports__);
   props: ['agente'],
   data: function data() {
     return {
+      arrayActividades: [],
+      arrayLocalidades: [],
+      arrayAsentamientos: [],
       arrayDirectories: [],
       arrayAgentes: [],
+      pagination: {
+        'total': 0,
+        'current_page': 0,
+        'per_page': 0,
+        'last_page': 0,
+        'from': 0,
+        'to': 0
+      },
+      offset: 3,
+      criterio: 'nombre_unidad',
+      buscar: '',
       num_registros: 10,
-      criterio: 'localidad',
-      buscar: ''
+      actividad_key: 0,
+      filtro_localidad: 'TODOS',
+      filtro_tam_est: 0,
+      filtro_tipo_asentamiento: 'TODOS',
+      filtro_nombre_asentamiento: 'TODOS',
+      filtro_incorporacion: 'TODOS',
+      filtro_telefono: 'TODOS',
+      filtro_email: 'TODOS',
+      filtro_pagina_web: 'TODOS'
     };
   },
+  computed: {
+    isActived: function isActived() {
+      return this.pagination.current_page;
+    },
+    //Calcula los elementos de la paginacion
+    pagesNumber: function pagesNumber() {
+      if (!this.pagination.to) {
+        return [];
+      }
+
+      var from = this.pagination.current_page - this.offset;
+
+      if (from < 1) {
+        from = 1;
+      }
+
+      var to = from + this.offset * 2;
+
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+
+      var pagesArray = [];
+
+      while (from <= to) {
+        pagesArray.push(from);
+        from++;
+      }
+
+      return pagesArray;
+    }
+  },
   methods: {
-    loadDirectories: function loadDirectories(page, buscar, criterio, num_registros) {
+    cambiarPagina: function cambiarPagina(page, buscar, criterio, num_registros, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, filtro_nombre_asentamiento) {
       var me = this;
-      var url = '/directorio/get-directories-assign?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&num_registros=' + num_registros;
+      me.pagination.current_page = page;
+      me.loadDirectories(page, buscar, criterio, num_registros, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, filtro_nombre_asentamiento);
+    },
+    loadAllActividades: function loadAllActividades() {
+      var me = this;
+      var url = '/actividades/all/get';
+      axios.get(url).then(function (response) {
+        //console.log(response)
+        me.arrayActividades = response.data; //console.log(me.arrayActividades);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      })["finally"](function () {// always executed
+      });
+    },
+    loadAllLocaliades: function loadAllLocaliades() {
+      var me = this;
+      var url = '/localidades/all/get';
       axios.get(url).then(function (response) {
         console.log(response);
-        me.arrayDirectories = response.data;
+        me.arrayLocalidades = response.data;
+        console.log(me.arrayLocalidades);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      })["finally"](function () {// always executed
+      });
+    },
+    loadAllAsentamientos: function loadAllAsentamientos() {
+      var me = this;
+      var url = '/asentamientos/all/get';
+      axios.get(url).then(function (response) {
+        console.log('GET ASENT'); //console.log(response)
+
+        me.arrayAsentamientos = response.data;
+        console.log(me.arrayAsentamientos);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      })["finally"](function () {// always executed
+      });
+    },
+    loadDirectories: function loadDirectories(page, buscar, criterio, num_registros, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, filtro_nombre_asentamiento) {
+      var me = this;
+      var url = '/directorio/get-directories-assign?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&num_registros=' + num_registros + '&actividad_key=' + actividad_key + '&filtro_tam_est=' + filtro_tam_est + '&filtro_tipo_asentamiento=' + filtro_tipo_asentamiento + '&filtro_localidad=' + filtro_localidad + '&filtro_incorporacion=' + filtro_incorporacion + '&filtro_telefono=' + filtro_telefono + '&filtro_email=' + filtro_email + '&filtro_pagina_web=' + filtro_pagina_web + '&filtro_nombre_asentamiento=' + filtro_nombre_asentamiento;
+      console.log(url);
+      axios.get(url).then(function (response) {
+        console.log(response);
+        var respuesta = response.data;
+        me.arrayDirectories = respuesta.directories.data;
+        me.pagination = respuesta.pagination;
         console.log(me.arrayDirectories);
       })["catch"](function (error) {
         // handle error
@@ -5764,14 +5898,49 @@ __webpack_require__.r(__webpack_exports__);
           }).then(function (response) {
             console.log('reponse:');
             console.log(response);
-            me.loadDirectories(1, me.buscar, me.criterio, me.num_registros);
+            me.loadDirectories(1, me.buscar, me.criterio, me.num_registros, me.actividad_key, me.filtro_tam_est, me.filtro_tipo_asentamiento, me.filtro_localidad, me.filtro_incorporacion, me.filtro_telefono, me.filtro_email, me.filtro_pagina_web, me.filtro_nombre_asentamiento);
             swalWithBootstrapButtons.fire('OK', 'Registros asignados.', 'success');
           })["catch"](function (error) {
             console.log(error);
           });
         }
       });
-    } //.asignar()
+    },
+    //.asignar()
+    asignarPorRegistro: function asignarPorRegistro(directory_id) {
+      var _this2 = this;
+
+      var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Desea asignar este unico resgistro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this2;
+          axios.put('/asignar/update/asignar-por-registro', {
+            'agente_id': me.agente.id,
+            'directory_id': directory_id
+          }).then(function (response) {
+            console.log('reponse:');
+            console.log(response);
+            me.loadDirectories(1, me.buscar, me.criterio, me.num_registros, me.actividad_key, me.filtro_tam_est, me.filtro_tipo_asentamiento, me.filtro_localidad, me.filtro_incorporacion, me.filtro_telefono, me.filtro_email, me.filtro_pagina_web, me.filtro_nombre_asentamiento);
+            swalWithBootstrapButtons.fire('OK', 'Registro asignado.', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    } //.asignarPorRegistro()
 
   },
   mounted: function mounted() {
@@ -5779,7 +5948,10 @@ __webpack_require__.r(__webpack_exports__);
 
     if (this.agente) {
       console.log(this.agente);
-      this.loadDirectories(1, this.buscar, this.criterio, this.num_registros);
+      this.loadAllActividades();
+      this.loadAllLocaliades();
+      this.loadAllAsentamientos();
+      this.loadDirectories(1, this.buscar, this.criterio, this.num_registros, 0, 0, 'TODOS', 'TODOS', 'TODOS', 'TODOS', 'TODOS', 'TODOS', 'TODOS');
     }
   }
 });
@@ -5892,7 +6064,7 @@ __webpack_require__.r(__webpack_exports__);
       })["finally"](function () {// always executed
       });
     },
-    cambiarPagina: function cambiarPagina(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web) {
+    cambiarPagina: function cambiarPagina(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, filtro_nombre_asentamiento) {
       var me = this;
       me.pagination.current_page = page;
       me.loadDirectory(page, buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, filtro_nombre_asentamiento);
@@ -7059,7 +7231,16 @@ var render = function render() {
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.arrayDirectories, function (dir) {
     return _c("tr", {
       key: dir.id
-    }, [_vm._m(1, true), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id_denue))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clee))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_unidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.razon_social))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_scian))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_clase_actividad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.descripcion_estrato_personal_ocupado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_exterior_o_kilometro))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_exterior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio_piso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_centro_comercial))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.corredor_industrial_comercial_mercado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_local))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_entidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.entidad_federativa))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.area_geoestadistica))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.manzana))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_telefono))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.correo_electronico))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.sitio_internet))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_establecimiento))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.latitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.longitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.fecha_incorporacion_denue))])]);
+    }, [_c("td", [_c("button", {
+      staticClass: "btn btn-warning",
+      on: {
+        click: function click($event) {
+          return _vm.desasignarPorRegistro(dir.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "icon icon-minus"
+    })])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id_denue))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clee))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_unidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.razon_social))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_scian))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_clase_actividad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.descripcion_estrato_personal_ocupado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_exterior_o_kilometro))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_exterior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio_piso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_centro_comercial))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.corredor_industrial_comercial_mercado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_local))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_entidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.entidad_federativa))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.area_geoestadistica))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.manzana))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_telefono))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.correo_electronico))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.sitio_internet))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_establecimiento))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.latitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.longitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.fecha_incorporacion_denue))])]);
   }), 0)])])])])])]);
 };
 
@@ -7068,15 +7249,6 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("#")]), _vm._v(" "), _c("th", [_vm._v("#id_denue")]), _vm._v(" "), _c("th", [_vm._v("clee")]), _vm._v(" "), _c("th", [_vm._v("nombre_unidad")]), _vm._v(" "), _c("th", [_vm._v("nombre_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("codigo_postal")]), _vm._v(" "), _c("th", [_vm._v("localidad")]), _vm._v(" "), _c("th", [_vm._v("razon_social")]), _vm._v(" "), _c("th", [_vm._v("codigo_scian")]), _vm._v(" "), _c("th", [_vm._v("nombre_clase_actividad")]), _vm._v(" "), _c("th", [_vm._v("descripcion_estrato_personal_ocupado")]), _vm._v(" "), _c("th", [_vm._v("tipo_vialidad")]), _vm._v(" "), _c("th", [_vm._v("nombre_vialidad")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_1")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_1")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_2")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_2")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_3")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_3")]), _vm._v(" "), _c("th", [_vm._v("numero_exterior_o_kilometro")]), _vm._v(" "), _c("th", [_vm._v("letra_exterior")]), _vm._v(" "), _c("th", [_vm._v("edificio")]), _vm._v(" "), _c("th", [_vm._v("edificio_piso")]), _vm._v(" "), _c("th", [_vm._v("numero_interior")]), _vm._v(" "), _c("th", [_vm._v("letra_interior")]), _vm._v(" "), _c("th", [_vm._v("tipo_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("nombre_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("tipo_centro_comercial")]), _vm._v(" "), _c("th", [_vm._v("corredor_industrial_comercial_mercado")]), _vm._v(" "), _c("th", [_vm._v("numero_local")]), _vm._v(" "), _c("th", [_vm._v("codigo_postal")]), _vm._v(" "), _c("th", [_vm._v("clave_entidad")]), _vm._v(" "), _c("th", [_vm._v("entidad_federativa")]), _vm._v(" "), _c("th", [_vm._v("clave_municipio")]), _vm._v(" "), _c("th", [_vm._v("municipio")]), _vm._v(" "), _c("th", [_vm._v("clave_localidad")]), _vm._v(" "), _c("th", [_vm._v("localidad")]), _vm._v(" "), _c("th", [_vm._v("area_geoestadistica")]), _vm._v(" "), _c("th", [_vm._v("manzana")]), _vm._v(" "), _c("th", [_vm._v("numero_telefono")]), _vm._v(" "), _c("th", [_vm._v("correo_electronico")]), _vm._v(" "), _c("th", [_vm._v("sitio_internet")]), _vm._v(" "), _c("th", [_vm._v("tipo_establecimiento")]), _vm._v(" "), _c("th", [_vm._v("latitud")]), _vm._v(" "), _c("th", [_vm._v("longitud")]), _vm._v(" "), _c("th", [_vm._v("fecha_incorporacion_denue")])])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("td", [_c("button", {
-    staticClass: "btn btn-warning"
-  }, [_c("i", {
-    staticClass: "icon icon-minus"
-  })])]);
 }];
 render._withStripped = true;
 
@@ -7370,6 +7542,541 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.actividad_key,
+      expression: "actividad_key"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.actividad_key = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _vm._l(_vm.arrayActividades, function (act) {
+    return _c("option", {
+      key: act.key,
+      domProps: {
+        value: act.key
+      }
+    }, [_vm._v(_vm._s(act.activity) + " - " + _vm._s(act.key) + "  ")]);
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Actividad económica")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_tam_est,
+      expression: "filtro_tam_est"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_tam_est = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("Todos los tamaños")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "1"
+    }
+  }, [_vm._v("0 a 5 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2"
+    }
+  }, [_vm._v("6 a 10 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "3"
+    }
+  }, [_vm._v("11 a 30 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "4"
+    }
+  }, [_vm._v("31 a 50 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "5"
+    }
+  }, [_vm._v("51 a 100 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "6"
+    }
+  }, [_vm._v("101 a 250 personas")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "7"
+    }
+  }, [_vm._v("251 y más personas")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Tamaño del estabecimiento")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_incorporacion,
+      expression: "filtro_incorporacion"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_incorporacion = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2010"
+    }
+  }, [_vm._v("2010")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2011"
+    }
+  }, [_vm._v("2011")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2012"
+    }
+  }, [_vm._v("2012")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2013"
+    }
+  }, [_vm._v("2013")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2014"
+    }
+  }, [_vm._v("2014")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2015"
+    }
+  }, [_vm._v("2015")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2016"
+    }
+  }, [_vm._v("2016")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2017"
+    }
+  }, [_vm._v("2017")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2018"
+    }
+  }, [_vm._v("2018")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2019"
+    }
+  }, [_vm._v("2019")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2020"
+    }
+  }, [_vm._v("2020")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2021"
+    }
+  }, [_vm._v("2021")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2022"
+    }
+  }, [_vm._v("2022")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2023"
+    }
+  }, [_vm._v("2023")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Año incorporación")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_tipo_asentamiento,
+      expression: "filtro_tipo_asentamiento"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_tipo_asentamiento = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "COLONIA"
+    }
+  }, [_vm._v("COLONIA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "FRACCIONAMIENTO"
+    }
+  }, [_vm._v("FRACCIONAMIENTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "LOCALIDAD"
+    }
+  }, [_vm._v("LOCALIDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "PUEBLO"
+    }
+  }, [_vm._v("PUEBLO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "BARRIO"
+    }
+  }, [_vm._v("BARRIO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RESIDENCIAL"
+    }
+  }, [_vm._v("RESIDENCIAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CONJUNTO HABITACIONAL"
+    }
+  }, [_vm._v("CONJUNTO HABITACIONAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "ZONA COMERCIAL"
+    }
+  }, [_vm._v("ZONA COMERCIAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "MANZANA"
+    }
+  }, [_vm._v("MANZANA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "OTRO (ESPECIFIQUE)"
+    }
+  }, [_vm._v("OTRO (ESPECIFIQUE)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "EXHACIENDA"
+    }
+  }, [_vm._v("EXHACIENDA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CIUDAD"
+    }
+  }, [_vm._v("CIUDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "HACIENDA"
+    }
+  }, [_vm._v("HACIENDA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RINCONADA"
+    }
+  }, [_vm._v("RINCONADA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "AEROPUERTO"
+    }
+  }, [_vm._v("AEROPUERTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "RANCHERIA"
+    }
+  }, [_vm._v("RANCHERIA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "UNIDAD HABITACIONAL"
+    }
+  }, [_vm._v("UNIDAD HABITACIONAL")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "PRIVADA"
+    }
+  }, [_vm._v("PRIVADA")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "NINGUNO"
+    }
+  }, [_vm._v("NINGUNO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "COTO"
+    }
+  }, [_vm._v("COTO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "UNIDAD"
+    }
+  }, [_vm._v("UNIDAD")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "CONDOMINIO"
+    }
+  }, [_vm._v("CONDOMINIO")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "ZONA FEDERAL"
+    }
+  }, [_vm._v("ZONA FEDERAL")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Tipo asentamiento")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_nombre_asentamiento,
+      expression: "filtro_nombre_asentamiento"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_nombre_asentamiento = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _vm._l(_vm.arrayAsentamientos, function (ast) {
+    return _c("option", {
+      key: ast.id,
+      domProps: {
+        value: ast.description,
+        textContent: _vm._s(ast.description)
+      }
+    });
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Asentamiento")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_localidad,
+      expression: "filtro_localidad"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_localidad = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _vm._l(_vm.arrayLocalidades, function (loc) {
+    return _c("option", {
+      key: loc.id,
+      domProps: {
+        value: loc.description,
+        textContent: _vm._s(loc.description)
+      }
+    });
+  })], 2), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Localidad")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_telefono,
+      expression: "filtro_telefono"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_telefono = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Teléfono")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_email,
+      expression: "filtro_email"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_email = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Email")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-4"
+  }, [_c("div", {
+    staticClass: "form-floating"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filtro_pagina_web,
+      expression: "filtro_pagina_web"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      id: "floatingSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filtro_pagina_web = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "TODOS"
+    }
+  }, [_vm._v("TODOS")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "con"
+    }
+  }, [_vm._v("Con")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "sin"
+    }
+  }, [_vm._v("Sin")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "floatingSelect"
+    }
+  }, [_vm._v("Sitio Web")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
     staticClass: "col-md-3"
   }, [_c("div", {
     staticClass: "input-group"
@@ -7477,44 +8184,113 @@ var render = function render() {
     on: {
       keyup: function keyup($event) {
         if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
-        return _vm.loadDirectories(1, _vm.buscar, _vm.criterio, _vm.num_registros);
+        return _vm.loadDirectories(1, _vm.buscar, _vm.criterio, _vm.num_registros, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
       },
       input: function input($event) {
         if ($event.target.composing) return;
         _vm.buscar = $event.target.value;
       }
     }
-  }), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-primary",
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col"
+  }, [_c("button", {
+    staticClass: "btn btn-lg btn-info px-4",
     attrs: {
       type: "submit"
     },
     on: {
       click: function click($event) {
-        return _vm.loadDirectories(1, _vm.buscar, _vm.criterio, _vm.num_registros);
+        return _vm.loadDirectories(1, _vm.buscar, _vm.criterio, _vm.num_registros, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
       }
     }
   }, [_c("i", {
     staticClass: "bi bi-search"
-  }), _vm._v(" Buscar")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Filtrar")])])]), _vm._v(" "), _c("div", {
     staticClass: "container",
     staticStyle: {
       overflow: "hidden"
     }
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("h3", [_vm._v("Resultados: " + _vm._s(_vm.pagination.total))])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("button", {
-    staticClass: "btn btn-success my-2",
+    staticClass: "btn float-end btn-success my-2",
     on: {
       click: function click($event) {
         return _vm.asignarRegistros();
       }
     }
-  }, [_vm._v("+ Asignar Registros")]), _vm._v(" "), _c("table", {
+  }, [_c("i", {
+    staticClass: "bi bi-plus"
+  }), _vm._v("  Asignar Registros")])])]), _vm._v(" "), _c("table", {
     staticClass: "table table-responsive table-bordered table-striped table-sm"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.arrayDirectories, function (dir) {
     return _c("tr", {
       key: dir.id
-    }, [_vm._m(1, true), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id_denue))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clee))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_unidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.razon_social))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_scian))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_clase_actividad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.descripcion_estrato_personal_ocupado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_exterior_o_kilometro))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_exterior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio_piso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_centro_comercial))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.corredor_industrial_comercial_mercado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_local))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_entidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.entidad_federativa))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.area_geoestadistica))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.manzana))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_telefono))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.correo_electronico))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.sitio_internet))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_establecimiento))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.latitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.longitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.fecha_incorporacion_denue))])]);
-  }), 0)])])])])])]);
+    }, [_c("td", [_c("button", {
+      staticClass: "btn btn-info",
+      on: {
+        click: function click($event) {
+          return _vm.asignarPorRegistro(dir.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "icon icon-plus"
+    })])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.id_denue))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clee))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_unidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.razon_social))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_scian))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_clase_actividad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.descripcion_estrato_personal_ocupado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_vialidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_entre_vialidad_3))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_exterior_o_kilometro))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_exterior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.edificio_piso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.letra_interior))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.nombre_asentamiento_humano))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_centro_comercial))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.corredor_industrial_comercial_mercado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_local))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.codigo_postal))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_entidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.entidad_federativa))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.municipio))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.clave_localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.localidad))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.area_geoestadistica))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.manzana))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.numero_telefono))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.correo_electronico))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.sitio_internet))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.tipo_establecimiento))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.latitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.longitud))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(dir.fecha_incorporacion_denue))])]);
+  }), 0)]), _vm._v(" "), _c("nav", [_c("ul", {
+    staticClass: "pagination"
+  }, [_vm.pagination.current_page > 1 ? _c("li", {
+    staticClass: "page-item"
+  }, [_c("a", {
+    staticClass: "page-link",
+    attrs: {
+      href: "#"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.cambiarPagina(_vm.pagination.current_page - 1, _vm.buscar, _vm.criterio, _vm.num_registros, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
+      }
+    }
+  }, [_vm._v("Ant")])]) : _vm._e(), _vm._v(" "), _vm._l(_vm.pagesNumber, function (page) {
+    return _c("li", {
+      key: page,
+      staticClass: "page-item",
+      "class": [page == _vm.isActived ? "active" : ""]
+    }, [_c("a", {
+      staticClass: "page-link",
+      attrs: {
+        href: "#"
+      },
+      domProps: {
+        textContent: _vm._s(page)
+      },
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.cambiarPagina(page, _vm.buscar, _vm.criterio, _vm.num_registros, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
+        }
+      }
+    })]);
+  }), _vm._v(" "), _vm.pagination.current_page < _vm.pagination.last_page ? _c("li", {
+    staticClass: "page-item"
+  }, [_c("a", {
+    staticClass: "page-link",
+    attrs: {
+      href: "#"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.cambiarPagina(_vm.pagination.current_page + 1, _vm.buscar, _vm.criterio, _vm.num_registros, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
+      }
+    }
+  }, [_vm._v("Sig")])]) : _vm._e()], 2)])])])])])]);
 };
 
 var staticRenderFns = [function () {
@@ -7522,15 +8298,6 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("thead", [_c("tr", [_c("th"), _vm._v(" "), _c("th", [_vm._v("#")]), _vm._v(" "), _c("th", [_vm._v("#id_denue")]), _vm._v(" "), _c("th", [_vm._v("clee")]), _vm._v(" "), _c("th", [_vm._v("nombre_unidad")]), _vm._v(" "), _c("th", [_vm._v("nombre_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("codigo_postal")]), _vm._v(" "), _c("th", [_vm._v("localidad")]), _vm._v(" "), _c("th", [_vm._v("razon_social")]), _vm._v(" "), _c("th", [_vm._v("codigo_scian")]), _vm._v(" "), _c("th", [_vm._v("nombre_clase_actividad")]), _vm._v(" "), _c("th", [_vm._v("descripcion_estrato_personal_ocupado")]), _vm._v(" "), _c("th", [_vm._v("tipo_vialidad")]), _vm._v(" "), _c("th", [_vm._v("nombre_vialidad")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_1")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_1")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_2")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_2")]), _vm._v(" "), _c("th", [_vm._v("tipo_entre_vialidad_3")]), _vm._v(" "), _c("th", [_vm._v("nombre_entre_vialidad_3")]), _vm._v(" "), _c("th", [_vm._v("numero_exterior_o_kilometro")]), _vm._v(" "), _c("th", [_vm._v("letra_exterior")]), _vm._v(" "), _c("th", [_vm._v("edificio")]), _vm._v(" "), _c("th", [_vm._v("edificio_piso")]), _vm._v(" "), _c("th", [_vm._v("numero_interior")]), _vm._v(" "), _c("th", [_vm._v("letra_interior")]), _vm._v(" "), _c("th", [_vm._v("tipo_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("nombre_asentamiento_humano")]), _vm._v(" "), _c("th", [_vm._v("tipo_centro_comercial")]), _vm._v(" "), _c("th", [_vm._v("corredor_industrial_comercial_mercado")]), _vm._v(" "), _c("th", [_vm._v("numero_local")]), _vm._v(" "), _c("th", [_vm._v("codigo_postal")]), _vm._v(" "), _c("th", [_vm._v("clave_entidad")]), _vm._v(" "), _c("th", [_vm._v("entidad_federativa")]), _vm._v(" "), _c("th", [_vm._v("clave_municipio")]), _vm._v(" "), _c("th", [_vm._v("municipio")]), _vm._v(" "), _c("th", [_vm._v("clave_localidad")]), _vm._v(" "), _c("th", [_vm._v("localidad")]), _vm._v(" "), _c("th", [_vm._v("area_geoestadistica")]), _vm._v(" "), _c("th", [_vm._v("manzana")]), _vm._v(" "), _c("th", [_vm._v("numero_telefono")]), _vm._v(" "), _c("th", [_vm._v("correo_electronico")]), _vm._v(" "), _c("th", [_vm._v("sitio_internet")]), _vm._v(" "), _c("th", [_vm._v("tipo_establecimiento")]), _vm._v(" "), _c("th", [_vm._v("latitud")]), _vm._v(" "), _c("th", [_vm._v("longitud")]), _vm._v(" "), _c("th", [_vm._v("fecha_incorporacion_denue")])])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("td", [_c("button", {
-    staticClass: "btn btn-info"
-  }, [_c("i", {
-    staticClass: "icon icon-plus"
-  })])]);
 }];
 render._withStripped = true;
 
@@ -8113,7 +8880,7 @@ var render = function render() {
   }, [_vm._v("Sitio Web")])])])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
-    staticClass: "col-md-6"
+    staticClass: "col"
   }, [_c("div", {
     staticClass: "input-group"
   }, [_c("select", {
@@ -8168,10 +8935,12 @@ var render = function render() {
         _vm.buscar = $event.target.value;
       }
     }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-6"
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col"
   }, [_c("button", {
-    staticClass: "btn btn-info float-end px-4",
+    staticClass: "btn btn-lg btn-info px-4",
     attrs: {
       type: "submit"
     },
@@ -8184,8 +8953,14 @@ var render = function render() {
     staticClass: "bi bi-search"
   }), _vm._v(" Filtrar")])])]), _vm._v(" "), _c("div", {
     staticClass: "container-fluid my-4"
-  }, [_c("h3", [_vm._v("Resultados: " + _vm._s(_vm.pagination.total))]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-success",
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("h3", [_vm._v("Resultados: " + _vm._s(_vm.pagination.total))])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("button", {
+    staticClass: "my-4 float-end btn btn-success",
     attrs: {
       type: "button"
     },
@@ -8197,7 +8972,7 @@ var render = function render() {
   }, [_c("i", {
     staticClass: "bi bi-file-earmark-excel"
   }), _vm._v(" Exportar XLS ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-outline-success",
+    staticClass: "my-4 float-end btn btn-outline-success",
     attrs: {
       type: "button"
     },
@@ -8208,7 +8983,7 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-filetype-csv"
-  }), _vm._v(" Exportar CSV")])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Exportar CSV")])])])]), _vm._v(" "), _c("div", {
     staticClass: "container-fluid overflow-scroll"
   }, [_c("table", {
     staticClass: "table table-bordered table-striped table-sm"
@@ -8216,14 +8991,14 @@ var render = function render() {
     return _c("tr", {
       key: directory.id
     }, [_c("td", [_c("a", {
-      staticClass: "btn btn-primary",
+      staticClass: "btn btn-outline-danger",
       attrs: {
         target: "_blank",
         href: "https://google.com/maps?q=" + directory.latitud + "," + directory.longitud
       }
     }, [_c("i", {
       staticClass: "bi bi-geo-alt"
-    }), _vm._v(" Abrir\n                                    ")])]), _vm._v(" "), _c("td", {
+    }), _vm._v(" Ver Mapa\n                                    ")])]), _vm._v(" "), _c("td", {
       domProps: {
         textContent: _vm._s(directory.id_denue)
       }
@@ -8404,7 +9179,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.cambiarPagina(_vm.pagination.current_page - 1, _vm.buscar, _vm.criterio);
+        return _vm.cambiarPagina(_vm.pagination.current_page - 1, _vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
       }
     }
   }, [_vm._v("Ant")])]) : _vm._e(), _vm._v(" "), _vm._l(_vm.pagesNumber, function (page) {
@@ -8423,7 +9198,7 @@ var render = function render() {
       on: {
         click: function click($event) {
           $event.preventDefault();
-          return _vm.cambiarPagina(page, _vm.buscar, _vm.criterio);
+          return _vm.cambiarPagina(page, _vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
         }
       }
     })]);
@@ -8437,7 +9212,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.cambiarPagina(_vm.pagination.current_page + 1, _vm.buscar, _vm.criterio);
+        return _vm.cambiarPagina(_vm.pagination.current_page + 1, _vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, _vm.filtro_nombre_asentamiento);
       }
     }
   }, [_vm._v("Sig")])]) : _vm._e()], 2)])])])])]), _vm._v(" "), _c("div", {

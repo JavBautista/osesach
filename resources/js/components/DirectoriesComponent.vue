@@ -152,7 +152,7 @@
                 <!--./form-group row 3-->
 
                 <div class="form-group row">
-                    <div class="col-md-6">
+                    <div class="col">
                         <div class="input-group">
                             <select class="form-control" v-model="criterio">
                                 <option value="nombre_unidad">Unidad</option>
@@ -162,17 +162,23 @@
                             <input type="text" v-model="buscar" class="form-control" placeholder="Texto a buscar">
                         </div>
                     </div>
-                    <div class="col-md-6">
-
-                        <button type="submit" @click="loadDirectory(1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)" class="btn btn-info float-end px-4"><i class="bi bi-search"></i> Filtrar</button>
-
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <button type="submit" @click="loadDirectory(1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)" class="btn btn-lg btn-info px-4"><i class="bi bi-search"></i> Filtrar</button>
                     </div>
                 </div>
                 <!--./form-group row 4-->
                 <div class="container-fluid my-4">
-                    <h3>Resultados: {{ pagination.total }}</h3>
-                    <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'xls')" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Exportar XLS </button>
-                    <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'csv')" class="btn btn-outline-success"><i class="bi bi-filetype-csv"></i> Exportar CSV</button>
+                    <div class="form-group row">
+                        <div class="col-md-6"><h3>Resultados: {{ pagination.total }}</h3></div>
+                        <div class="col-md-6">
+
+                            <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'xls')" class="my-4 float-end btn btn-success"><i class="bi bi-file-earmark-excel"></i> Exportar XLS </button>
+                            <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'csv')" class="my-4 float-end btn btn-outline-success"><i class="bi bi-filetype-csv"></i> Exportar CSV</button>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class="container-fluid overflow-scroll">
@@ -227,8 +233,8 @@
                         <tbody>
                             <tr v-for="directory in arrayDirectories" :key="directory.id">
                                 <td>
-                                    <a class="btn btn-primary" target="_blank" :href="'https://google.com/maps?q='+directory.latitud+','+directory.longitud">
-                                        <i class="bi bi-geo-alt"> </i> Abrir
+                                    <a class="btn btn-outline-danger" target="_blank" :href="'https://google.com/maps?q='+directory.latitud+','+directory.longitud">
+                                        <i class="bi bi-geo-alt"> </i> Ver Mapa
                                     </a>
                                 </td>
                                 <td v-text="directory.id_denue"></td>
@@ -279,15 +285,15 @@
                     <nav>
                         <ul class="pagination">
                         <li class="page-item" v-if="pagination.current_page > 1">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page-1,buscar,criterio)">Ant</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page-1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)">Ant</a>
                         </li>
 
                         <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page==isActived ? 'active':'']">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)" v-text="page"></a>
                         </li>
 
                         <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar,criterio)">Sig</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento)">Sig</a>
                         </li>
                         </ul>
                     </nav>
@@ -438,7 +444,7 @@
                     // always executed
                   });
             },
-            cambiarPagina(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web){
+            cambiarPagina(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento){
                 let me = this;
                 me.pagination.current_page = page;
                 me.loadDirectory(page,buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,filtro_nombre_asentamiento);

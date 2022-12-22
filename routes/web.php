@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /*DIRECTORIO*/
     Route::get('/directorio', [App\Http\Controllers\DirectoryController::class, 'inicio']);
+
     Route::get('/directorio/get', [App\Http\Controllers\DirectoryController::class, 'get']);
 
     Route::get('/directorio/get-directories-assign', [App\Http\Controllers\DirectoryController::class, 'getDirectoriesForAssign']);
@@ -69,6 +70,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/asignar/update/asignar-registros', [App\Http\Controllers\DirectoryController::class, 'asignarRegistrosAgente']);
     Route::put('/asignar/update/desasignar-registros', [App\Http\Controllers\DirectoryController::class, 'desasignarRegistrosAgente']);
+
+    Route::put('/asignar/update/asignar-por-registro', [App\Http\Controllers\DirectoryController::class, 'asignarPorRegistroAgente']);
+    Route::put('/asignar/update/desasignar-por-registro', [App\Http\Controllers\DirectoryController::class, 'desasignarPorRegistroAgente']);
 
     //AVANCES
     Route::get('/avance-general', [App\Http\Controllers\ReportsController::class, 'avanceGeneral']);

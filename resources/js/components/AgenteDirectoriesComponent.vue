@@ -77,7 +77,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="dir in arrayDirectories" :key="dir.id">
-                                <td> <button class="btn btn-warning"> <i class="icon icon-minus"></i> </button> </td>
+                                <td> <button class="btn btn-warning" @click="desasignarPorRegistro(dir.id)"> <i class="icon icon-minus"></i> </button> </td>
                                 <td>{{dir.id}}</td>
                                 <td>{{dir.id_denue}}</td>
                                 <td>{{dir.clee}}</td>
@@ -199,7 +199,44 @@
                     });
                   }
                 })
-            }//.asignar()
+            },//.asignar()
+            desasignarPorRegistro(directory_id){
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                  title: '¿Desea desasignar este unico resgistro?',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Aceptar',
+                  cancelButtonText: 'Cancelar',
+                  reverseButtons: true
+                }).then((result) => {
+                  if (result.value) {
+                    let me=this;
+                    axios.put('/asignar/update/desasignar-por-registro',{
+                        'directory_id':directory_id,
+                    }).then(function (response){
+                        console.log('reponse:')
+                        console.log(response)
+                        me.loadDirectories(1,me.buscar,me.criterio,me.num_registros);
+                        swalWithBootstrapButtons.fire(
+                          'OK',
+                          'Registro desasignado.',
+                          'success'
+                        )
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                  }
+                })
+            }//.desasignarPorRegistro()
         },
         mounted() {
             console.log('Asignacion agente Component mounted.')

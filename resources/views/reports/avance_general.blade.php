@@ -5,7 +5,7 @@
         <div class="container">
         <div class="card">
             <div class="card-header">
-                <i class="fa fa-align-justify"></i> Datos generales
+                <i class="fa fa-align-justify"></i> Unidades Económicas: Datos generales
             </div>
             <div class="card-body">
 
@@ -37,11 +37,11 @@
                 </div>
 
                 <div class="alert alert-warning text-center" role="alert">
-                  <p>Porcentaje</p>
+                  <p>Porcentaje de visiteo</p>
                   @php
                       $porcentaje=number_format(($total_directories_trabajadas*100)/$total_directories , 2 );
                   @endphp
-                  <p>{{  $porcentaje  }}</p>
+                  <p>{{  $porcentaje  }} %</p>
                 </div>
 
                 <div class="progress">
