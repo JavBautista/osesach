@@ -20,7 +20,6 @@ class ReportsController extends Controller
         $total_directories_asignadas =  DB::table('directories')->where('asignada',1)->count();
 
         $total_directories_trabajadas =  DB::table('directories')
-                                        ->where('asignada',1)
                                         ->where('status_id','>','0')
                                         ->count();
 
