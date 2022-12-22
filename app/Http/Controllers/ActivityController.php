@@ -54,7 +54,7 @@ class ActivityController extends Controller
     }
 
     public function loadAllActivities(){
-        $activities= Activity::all();
+        $activities= Activity::orderBy('activity','ASC')->get();
         return $activities;
     }
 

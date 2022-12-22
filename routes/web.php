@@ -89,10 +89,4 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('directory/export', [App\Http\Controllers\DirectoryController::class, 'directoryExport']);
 
-
-    Route::get('directory/new-export', [App\Http\Controllers\DirectoryController::class, 'directoryNewExport']);
-
-
-
-
 });#./Middlware AUTH

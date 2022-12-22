@@ -5,10 +5,7 @@
         <div class="container">
         <div class="card">
             <div class="card-header">
-                <i class="fa fa-align-justify"></i> GENERAL
-                <button type="button" class="btn btn-success float-rigth">
-                    <i class="bi bi-file-earmark-excel"></i>&nbsp;Exportar
-                </button>
+                <i class="fa fa-align-justify"></i> Datos generales
             </div>
             <div class="card-body">
 
@@ -16,10 +13,26 @@
                 <hr>
                 <div class="card">
                     <div class="card-body">
-                        <h2>Registros Totales: {{$total_directories}} </h2>
-                        <h2>Registros Asignados: {{$total_directories_asignadas}} </h2>
-                        <h2>Registros Trabajados: {{$total_directories_trabajadas}} </h2>
-                        <h2>Registros Nuevos: {{$nuevas}} </h2>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Totales</th>
+                                    <th>Inciales</th>
+                                    <th>Nuevos</th>
+                                    <th>Asignados</th>
+                                    <th>Trabajados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{$total_directories}}</td>
+                                    <td>{{$iniciales}}</td>
+                                    <td>{{$nuevas}}</td>
+                                    <td>{{$total_directories_asignadas}} </td>
+                                    <td>{{$total_directories_trabajadas}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

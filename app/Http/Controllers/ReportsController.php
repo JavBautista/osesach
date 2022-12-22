@@ -15,7 +15,7 @@ class ReportsController extends Controller
     public function avanceGeneral(){
 
         $total_directories =  DB::table('directories')->count();
-        $total_visits =  DB::table('visits')->count();
+        $total_visits  =  DB::table('visits')->count();
 
         $total_directories_asignadas =  DB::table('directories')->where('asignada',1)->count();
 
@@ -28,12 +28,15 @@ class ReportsController extends Controller
                         ->whereNull('id_denue')
                         ->count();
 
+        $iniciales = $total_directories - $nuevas;
+
         return view('reports.avance_general',[
             'total_visits'=>$total_visits,
             'total_directories'=>$total_directories,
             'total_directories_asignadas'=>$total_directories_asignadas,
             'total_directories_trabajadas'=>$total_directories_trabajadas,
             'nuevas'=>$nuevas,
+            'iniciales'=>$iniciales,
         ]);
 
     }
