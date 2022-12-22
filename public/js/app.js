@@ -6011,9 +6011,9 @@ __webpack_require__.r(__webpack_exports__);
       })["finally"](function () {// always executed
       });
     },
-    exportar: function exportar(buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web) {
+    exportar: function exportar(buscar, criterio, actividad_key, filtro_tam_est, filtro_tipo_asentamiento, filtro_localidad, filtro_incorporacion, filtro_telefono, filtro_email, filtro_pagina_web, formato) {
       var me = this;
-      var url = 'directory/export?buscar=' + buscar + '&criterio=' + criterio + '&actividad_key=' + actividad_key + '&filtro_tam_est=' + filtro_tam_est + '&filtro_tipo_asentamiento=' + filtro_tipo_asentamiento + '&filtro_localidad=' + filtro_localidad + '&filtro_incorporacion=' + filtro_incorporacion + '&filtro_telefono=' + filtro_telefono + '&filtro_email=' + filtro_email + '&filtro_pagina_web=' + filtro_pagina_web;
+      var url = 'directory/export?buscar=' + buscar + '&criterio=' + criterio + '&actividad_key=' + actividad_key + '&filtro_tam_est=' + filtro_tam_est + '&filtro_tipo_asentamiento=' + filtro_tipo_asentamiento + '&filtro_localidad=' + filtro_localidad + '&filtro_incorporacion=' + filtro_incorporacion + '&filtro_telefono=' + filtro_telefono + '&filtro_email=' + filtro_email + '&filtro_pagina_web=' + filtro_pagina_web + '&formato=' + formato;
       console.log('Exportar:' + url);
       window.open(url);
     }
@@ -8191,12 +8191,24 @@ var render = function render() {
     },
     on: {
       click: function click($event) {
-        return _vm.exportar(_vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web);
+        return _vm.exportar(_vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, "xls");
       }
     }
   }, [_c("i", {
     staticClass: "bi bi-file-earmark-excel"
-  }), _vm._v(" Exportar")])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Exportar XLS ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-outline-success",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.exportar(_vm.buscar, _vm.criterio, _vm.actividad_key, _vm.filtro_tam_est, _vm.filtro_tipo_asentamiento, _vm.filtro_localidad, _vm.filtro_incorporacion, _vm.filtro_telefono, _vm.filtro_email, _vm.filtro_pagina_web, "csv");
+      }
+    }
+  }, [_c("i", {
+    staticClass: "bi bi-filetype-csv"
+  }), _vm._v(" Exportar CSV")])]), _vm._v(" "), _c("div", {
     staticClass: "container-fluid overflow-scroll"
   }, [_c("table", {
     staticClass: "table table-bordered table-striped table-sm"

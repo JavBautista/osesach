@@ -513,7 +513,46 @@ class DirectoryController extends Controller
         return $asentamientos;
     }
 
+
+
+    public function uploadDirectoryImage(Request $request){
+
+        $directory_id =  $request->directory_id;
+
+        $directory = Directory::findOrFail($directory_id);
+        $directory->image = $request->file('image')->store('directories', 'public');
+        $directory->save();
+
+        return response()->json([
+            'ok'=>true,
+            'directory' => $directory,
+        ]);
+
+    }
+
+
+    public function deleteDirectoryImage(Request $request){
+
+        $directory= Directory::findOrFail($request->id);
+        $file = $directory->image;
+        if($file){
+            $existe = Storage::disk('public')->exists($file);
+            if($existe){
+                Storage::disk('public')->delete($file);
+            }
+        }
+        $directory->image=null;
+        $directory->save();
+
+        return response()->json([
+            'ok'=>true,
+            'directory' => $directory,
+        ]);
+
+    }
+
     public function directoryExport(Request $request){
+        $formato = $request->formato;
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         $actividad_key = $request->actividad_key;
@@ -552,49 +591,136 @@ class DirectoryController extends Controller
         }
 
 
-        return Excel::download(new DirectoriesExport($buscar,$criterio,$actividad_key,$where_tipo_asentamiento,$where_localidad,$where_incorporacion,$where_tel,$where_email,$where_pagina_web,$where_tam_est), 'directories.xlsx');
+        //return Excel::download(new DirectoriesExport($buscar,$criterio,$actividad_key,$where_tipo_asentamiento,$where_localidad,$where_incorporacion,$where_tel,$where_email,$where_pagina_web,$where_tam_est), 'directories.xlsx');
 
-    }
+        if($formato=='csv'){
 
-    public function uploadDirectoryImage(Request $request){
-
-        $directory_id =  $request->directory_id;
-
-        $directory = Directory::findOrFail($directory_id);
-        $directory->image = $request->file('image')->store('directories', 'public');
-        $directory->save();
-
-        return response()->json([
-            'ok'=>true,
-            'directory' => $directory,
-        ]);
-
-    }
-
-
-    public function deleteDirectoryImage(Request $request){
-
-        $directory= Directory::findOrFail($request->id);
-        $file = $directory->image;
-        if($file){
-            $existe = Storage::disk('public')->exists($file);
-            if($existe){
-                Storage::disk('public')->delete($file);
-            }
+            return (new NewDirectoriesExport($buscar,$criterio,$actividad_key,$where_tipo_asentamiento,$where_localidad,$where_incorporacion,$where_tel,$where_email,$where_pagina_web,$where_tam_est))
+                ->download(
+                    'directories.csv',
+                    \Nikazooz\Simplesheet\Simplesheet::CSV,
+                    [
+                        'Content-Type' => 'text/csv',
+                    ]
+                );
         }
-        $directory->image=null;
-        $directory->save();
+        else{
+            return (new NewDirectoriesExport($buscar,$criterio,$actividad_key,$where_tipo_asentamiento,$where_localidad,$where_incorporacion,$where_tel,$where_email,$where_pagina_web,$where_tam_est))->download('directories.xlsx');
 
-        return response()->json([
-            'ok'=>true,
-            'directory' => $directory,
-        ]);
+        }
 
     }
 
+    public function directoryNewExport(Request $request){
+        /*$buscar = $request->buscar;
+        $criterio = $request->criterio;
+        $actividad_key = $request->actividad_key;
 
-    public function directoryTestExport(){
-        return Simplesheet::download(new NewDirectoriesExport, 'directory.xlsx');
+        $filtro_tipo_asentamiento=$request->filtro_tipo_asentamiento;
+        $where_tipo_asentamiento=($filtro_tipo_asentamiento=='TODOS')?null:$filtro_tipo_asentamiento;
+
+        $filtro_localidad = $request->filtro_localidad;
+        $where_localidad=($filtro_localidad=='TODOS')?null:$filtro_localidad;
+
+        $filtro_incorporacion = $request->filtro_incorporacion;
+        $where_incorporacion=($filtro_incorporacion=='TODOS')?null:$filtro_incorporacion;
+        //dd($where_tipo_asentamiento);
+
+        $filtro_tam_est = $request->filtro_tam_est;
+
+        $filtro_telefono=$request->filtro_telefono;
+        $where_tel=($filtro_telefono=='TODOS')?null:$filtro_telefono;
+
+        $filtro_email=$request->filtro_email;
+        $where_email=($filtro_email=='TODOS')?null:$filtro_email;
+
+        $filtro_pagina_web=$request->filtro_pagina_web;
+        $where_pagina_web=($filtro_pagina_web=='TODOS')?null:$filtro_pagina_web;
+
+
+        $where_tam_est=null;
+        switch ($filtro_tam_est) {
+            case 1: $where_tam_est='0 a 5 personas'; break;
+            case 2: $where_tam_est='6 a 10 personas'; break;
+            case 3: $where_tam_est='11 a 30 personas'; break;
+            case 4: $where_tam_est='31 a 50 personas'; break;
+            case 5: $where_tam_est='51 a 100 personas'; break;
+            case 6: $where_tam_est='101 a 250 personas'; break;
+            case 7: $where_tam_est='251 y más personas'; break;
+        }
+
+        $directories=[];
+        if($buscar==''){
+            $directories = Directory::where('active',1)
+                        ->when($actividad_key, function ($query, $actividad_key) {
+                            return $query->where('codigo_scian', '=', $actividad_key);
+                        })
+                        ->when($where_tam_est, function ($query, $where_tam_est) {
+                            return $query->where('descripcion_estrato_personal_ocupado','like', $where_tam_est);
+                        })
+                        ->when($where_tipo_asentamiento, function ($query, $where_tipo_asentamiento) {
+                            return $query->where('tipo_asentamiento_humano','like', $where_tipo_asentamiento);
+                        })
+                        ->when($where_localidad, function ($query, $where_localidad) {
+                            return $query->where('localidad','like', $where_localidad);
+                        })
+                        ->when($where_incorporacion, function ($query, $where_incorporacion) {
+                            return $query->where('fecha_incorporacion_denue','like', $where_incorporacion.'%');
+                        })
+
+                        ->when( ($where_tel == 'sin' ), function ($query) {
+                            return $query->whereNull('numero_telefono')
+                                         ->orWhere('numero_telefono','like', '');
+                        })
+                        ->when( ($where_tel == 'con' ), function ($query) {
+                            return $query->where('numero_telefono','not like', '');
+                        })
+
+                        ->when( ($where_email == 'sin' ), function ($query) {
+                            return $query->whereNull('correo_electronico')
+                                         ->orWhere('correo_electronico','like', '');
+                        })
+                        ->when( ($where_email == 'con' ), function ($query) {
+                            return $query->where('correo_electronico','not like', '');
+                        })
+
+                        ->when( ($where_pagina_web == 'sin' ), function ($query) {
+                            return $query->whereNull('sitio_internet')
+                                         ->orWhere('sitio_internet','like', '');
+                        })
+                        ->when( ($where_pagina_web == 'con' ), function ($query) {
+                            return $query->where('sitio_internet','not like', '');
+                        })
+
+                        ->orderBy('id', 'asc')
+                        ->get();
+        }else{
+            $directories = Directory::where('active',1)
+                        ->where($criterio, 'like', '%'.$buscar.'%')
+                        ->when($actividad_key, function ($query, $actividad_key) {
+                            return $query->where('codigo_scian', '=', $actividad_key);
+                        })
+                        ->when($where_tam_est, function ($query, $where_tam_est) {
+                            return $query->where('descripcion_estrato_personal_ocupado','like', $where_tam_est);
+                        })
+                        ->when($where_tipo_asentamiento, function ($query, $where_tipo_asentamiento) {
+                            return $query->where('tipo_asentamiento_humano','like', $where_tipo_asentamiento);
+                        })
+                        ->when($where_localidad, function ($query, $where_localidad) {
+                            return $query->where('localidad','like', $where_localidad);
+                        })
+                        ->when($where_incorporacion, function ($query, $where_incorporacion) {
+                            return $query->where('fecha_incorporacion_denue','like', $where_incorporacion.'%');
+                        })
+                        ->orderBy('id', 'asc')
+                        ->get();
+        }
+
+        var_dump($directories);*/
+
+
+        //return Simplesheet::download(new NewDirectoriesExport, 'directory.xlsx');
+        return (new NewDirectoriesExport(2020))->download('directory.xlsx');
     }
 
 }

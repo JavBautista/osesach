@@ -171,7 +171,8 @@
                 <!--./form-group row 4-->
                 <div class="container-fluid my-4">
                     <h3>Resultados: {{ pagination.total }}</h3>
-                    <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web)" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Exportar</button>
+                    <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'xls')" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Exportar XLS </button>
+                    <button type="button" @click="exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,'csv')" class="btn btn-outline-success"><i class="bi bi-filetype-csv"></i> Exportar CSV</button>
 
                 </div>
                 <div class="container-fluid overflow-scroll">
@@ -561,9 +562,10 @@
                     // always executed
                   });
             },
-            exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web){
+
+            exportar(buscar,criterio,actividad_key,filtro_tam_est,filtro_tipo_asentamiento,filtro_localidad,filtro_incorporacion,filtro_telefono,filtro_email,filtro_pagina_web,formato){
                 let me=this;
-                var url = 'directory/export?buscar='+buscar+'&criterio='+criterio+'&actividad_key='+actividad_key+'&filtro_tam_est='+filtro_tam_est+'&filtro_tipo_asentamiento='+filtro_tipo_asentamiento+'&filtro_localidad='+filtro_localidad+'&filtro_incorporacion='+filtro_incorporacion+'&filtro_telefono='+filtro_telefono+'&filtro_email='+filtro_email+'&filtro_pagina_web='+filtro_pagina_web;
+                var url = 'directory/export?buscar='+buscar+'&criterio='+criterio+'&actividad_key='+actividad_key+'&filtro_tam_est='+filtro_tam_est+'&filtro_tipo_asentamiento='+filtro_tipo_asentamiento+'&filtro_localidad='+filtro_localidad+'&filtro_incorporacion='+filtro_incorporacion+'&filtro_telefono='+filtro_telefono+'&filtro_email='+filtro_email+'&filtro_pagina_web='+filtro_pagina_web+'&formato='+formato;
                 console.log('Exportar:'+url);
                 window.open(url);
             }
