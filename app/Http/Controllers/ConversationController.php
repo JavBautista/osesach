@@ -10,7 +10,7 @@ class ConversationController extends Controller
 {
     public function getApiConversationsSupervisor(Request $request){
         $supervisor_id = $request->supervisor_id;
-        $conversations = Conversation::with('messages')->where('supervisor_id',$supervisor_id)->paginate(20);
+        $conversations = Conversation::with('agent')->with('messages')->where('supervisor_id',$supervisor_id)->paginate(20);
         return $conversations;
     }//.getApiConversationsSupervisor()
 

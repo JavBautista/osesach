@@ -17,4 +17,8 @@ class Conversation extends Model
     public function supervisor(){
         return $this->belongsTo(Person::class);
     }
+
+    public function agent(){
+        return $this->belongsTo(Person::class);
+    }
 }

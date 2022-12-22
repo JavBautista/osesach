@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Directory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 use App\Exports\DirectoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
+
+use App\Exports\NewDirectoriesExport;
+use Nikazooz\Simplesheet\Facades\Simplesheet;
 
 class DirectoryController extends Controller
 {
@@ -107,7 +111,42 @@ class DirectoryController extends Controller
             'porcentaje_avance' => $porcentaje_avance,
             'value_progress_bar' => $value_progress_bar,
         ]);
-    }//.getDirectoriesAgent()
+    }//.getApiResumenAgent()
+
+    public function getApiResumenGeneral(Request $request)
+    {
+
+        $totales=0;
+        $asignadas=0;
+        $trabajadas=0;
+        $faltantes=0;
+        $porcentaje_avance=0;
+        $value_progress_bar=0;
+
+        $totales    = DB::table('directories')->count();
+        $asignadas  = DB::table('directories')->where('asignada',1)->count();
+        $nuevas     = DB::table('directories')->whereNull('id_denue')->count();
+        $trabajadas = DB::table('directories')->where('status_id','>',0)->count();
+        $faltantes  = DB::table('directories')->where('status_id','=',0)->count();
+
+        if($totales){
+            $porcentaje_avance= ($trabajadas*100/$totales);
+            $porcentaje_avance=number_format($porcentaje_avance,2);
+            $value_progress_bar=$porcentaje_avance/100;
+            $value_progress_bar=number_format($value_progress_bar,2);
+
+        }
+        return response()->json([
+            'ok'=>true,
+            'nuevas' => $nuevas,
+            'totales' => $totales,
+            'asignadas' => $asignadas,
+            'trabajadas' => $trabajadas,
+            'faltantes' => $faltantes,
+            'porcentaje_avance' => $porcentaje_avance,
+            'value_progress_bar' => $value_progress_bar,
+        ]);
+    }//.getApiResumenGeneral()
 
 
     public function asignacion(Request $request)
@@ -515,6 +554,47 @@ class DirectoryController extends Controller
 
         return Excel::download(new DirectoriesExport($buscar,$criterio,$actividad_key,$where_tipo_asentamiento,$where_localidad,$where_incorporacion,$where_tel,$where_email,$where_pagina_web,$where_tam_est), 'directories.xlsx');
 
+    }
+
+    public function uploadDirectoryImage(Request $request){
+
+        $directory_id =  $request->directory_id;
+
+        $directory = Directory::findOrFail($directory_id);
+        $directory->image = $request->file('image')->store('directories', 'public');
+        $directory->save();
+
+        return response()->json([
+            'ok'=>true,
+            'directory' => $directory,
+        ]);
+
+    }
+
+
+    public function deleteDirectoryImage(Request $request){
+
+        $directory= Directory::findOrFail($request->id);
+        $file = $directory->image;
+        if($file){
+            $existe = Storage::disk('public')->exists($file);
+            if($existe){
+                Storage::disk('public')->delete($file);
+            }
+        }
+        $directory->image=null;
+        $directory->save();
+
+        return response()->json([
+            'ok'=>true,
+            'directory' => $directory,
+        ]);
+
+    }
+
+
+    public function directoryTestExport(){
+        return Simplesheet::download(new NewDirectoriesExport, 'directory.xlsx');
     }
 
 }

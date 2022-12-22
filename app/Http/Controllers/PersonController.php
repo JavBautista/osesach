@@ -172,7 +172,7 @@ class PersonController extends Controller
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                         ->where('users.role_id',4)
                         ->where('people.active',1)
-                        ->orderBy('people.id', 'desc')
+                        ->orderBy('people.name', 'asc')
                         ->paginate(10);
         return $supervisores;
     }
@@ -185,8 +185,32 @@ class PersonController extends Controller
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                         ->where('users.role_id',3)
                         ->where('people.active',1)
-                        ->orderBy('people.id', 'desc')
+                        ->orderBy('people.name', 'asc')
                         ->paginate(20);
         return $supervisores;
+    }
+
+    public function getApiPersonalForMessages(Request $request){
+        /*role_id:
+            3:AGENTES
+            4:SUPERVISORES
+        */
+        $role_a_buscar=0;
+        //Si es Agente buscamos los supervisores
+        if($request->role_id==3)
+            $role_a_buscar=4;
+        //Si es Super bsucamos en lso agentes
+        elseif($request->role_id==4)
+            $role_a_buscar=3;
+
+        $personal = DB::table('people')
+                        ->select('people.*','roles.description')
+                        ->leftJoin('users', 'users.person_id', '=', 'people.id')
+                        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->where('users.role_id',$role_a_buscar)
+                        ->where('people.active',1)
+                        ->orderBy('people.name', 'asc')
+                        ->paginate(20);
+        return $personal;
     }
 }

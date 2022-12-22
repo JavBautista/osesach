@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7009faad7260bd7fea9ad1447203cd2e",
+    "content-hash": "797e1bdae16a2d163a7d8d63477fa7fa",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -61,6 +61,81 @@
                 "source": "https://github.com/asm89/stack-cors/tree/v2.1.1"
             },
             "time": "2022-01-18T09:12:03+00:00"
+        },
+        {
+            "name": "box/spout",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/spout.git",
+                "reference": "9bdb027d312b732515b884a341c0ad70372c6295"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/spout/zipball/9bdb027d312b732515b884a341c0ad70372c6295",
+                "reference": "9bdb027d312b732515b884a341c0ad70372c6295",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-xmlreader": "*",
+                "ext-zip": "*",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2",
+                "phpunit/phpunit": "^8"
+            },
+            "suggest": {
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
+                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Box\\Spout\\": "src/Spout"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "homepage": "https://www.github.com/box/spout",
+            "keywords": [
+                "OOXML",
+                "csv",
+                "excel",
+                "memory",
+                "odf",
+                "ods",
+                "office",
+                "open",
+                "php",
+                "read",
+                "scale",
+                "spreadsheet",
+                "stream",
+                "write",
+                "xlsx"
+            ],
+            "support": {
+                "issues": "https://github.com/box/spout/issues",
+                "source": "https://github.com/box/spout/tree/v3.3.0"
+            },
+            "abandoned": true,
+            "time": "2021-05-14T21:18:09+00:00"
         },
         {
             "name": "brick/math",
@@ -3120,6 +3195,78 @@
                 "source": "https://github.com/nette/utils/tree/v3.2.8"
             },
             "time": "2022-09-12T23:36:20+00:00"
+        },
+        {
+            "name": "nikazooz/laravel-simplesheet",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikazooz/laravel-simplesheet.git",
+                "reference": "eed51f44b031a8c6ed920f87522197421577864b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikazooz/laravel-simplesheet/zipball/eed51f44b031a8c6ed920f87522197421577864b",
+                "reference": "eed51f44b031a8c6ed920f87522197421577864b",
+                "shasum": ""
+            },
+            "require": {
+                "box/spout": "^3.2",
+                "ext-json": "*",
+                "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "orchestra/database": "^3.5|^4.0|^5.0|^6.0",
+                "orchestra/testbench": "^3.5|^4.0|^5.0|^6.0",
+                "phpunit/phpunit": "~6.0|^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Nikazooz\\Simplesheet\\SimplesheetServiceProvider"
+                    ],
+                    "aliases": {
+                        "Simplesheet": "Nikazooz\\Simplesheet\\Facades\\Simplesheet"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nikazooz\\Simplesheet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nenad Živanović",
+                    "email": "nen.zivanovic@gmail.com"
+                }
+            ],
+            "description": "Simple, powerful and memory-efficient spreadsheet exports and imports in Laravel",
+            "keywords": [
+                "batch",
+                "box",
+                "csv",
+                "excel",
+                "export",
+                "import",
+                "laravel",
+                "php",
+                "simplesheet",
+                "spout",
+                "spreadsheet"
+            ],
+            "support": {
+                "issues": "https://github.com/nikazooz/laravel-simplesheet/issues",
+                "source": "https://github.com/nikazooz/laravel-simplesheet/tree/2.0.2"
+            },
+            "abandoned": true,
+            "time": "2021-04-15T20:18:45+00:00"
         },
         {
             "name": "nikic/php-parser",

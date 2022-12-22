@@ -23,11 +23,15 @@ Route::get('directory','App\Http\Controllers\DirectoryController@index');
 
 Route::get('directory/buscar','App\Http\Controllers\DirectoryController@buscar');
 
+Route::get('directory/resumen-avance-general','App\Http\Controllers\DirectoryController@getApiResumenGeneral');
+
 Route::get('directory/agent-asignacion','App\Http\Controllers\DirectoryController@getApiDirectoriesAgent');
 Route::get('directory/agent-resumen-avance','App\Http\Controllers\DirectoryController@getApiResumenAgent');
 
 Route::post('directory/store','App\Http\Controllers\DirectoryController@store');
 Route::post('directory/update','App\Http\Controllers\DirectoryController@update');
+Route::post('directory/update-image', 'App\Http\Controllers\DirectoryController@uploadDirectoryImage');
+Route::post('directory/delete-image', 'App\Http\Controllers\DirectoryController@deleteDirectoryImage');
 
 Route::get('visit/get','App\Http\Controllers\VisitController@index');
 Route::post('visit/store','App\Http\Controllers\VisitController@store');
@@ -43,6 +47,8 @@ Route::get('person/get/info','App\Http\Controllers\PersonController@getPersonaIn
 
 Route::get('person/get/agentes','App\Http\Controllers\PersonController@getApiAgentes');
 Route::get('person/get/supervisores','App\Http\Controllers\PersonController@getApiSupervisores');
+
+Route::get('person/get/personal-for-messages','App\Http\Controllers\PersonController@getApiPersonalForMessages');
 
 Route::get('conversations/get/supervisor','App\Http\Controllers\ConversationController@getApiConversationsSupervisor');
 Route::get('conversations/get/agent','App\Http\Controllers\ConversationController@getApiConversationsAgent');

@@ -26,6 +26,7 @@
                     <table class="table  table-responsive table-bordered table-striped table-sm">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>#</th>
                                 <th>#id_denue</th>
                                 <th>clee</th>
@@ -76,6 +77,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="dir in arrayDirectories" :key="dir.id">
+                                <td> <button class="btn btn-warning"> <i class="icon icon-minus"></i> </button> </td>
                                 <td>{{dir.id}}</td>
                                 <td>{{dir.id_denue}}</td>
                                 <td>{{dir.clee}}</td>

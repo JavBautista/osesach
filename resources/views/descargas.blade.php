@@ -9,6 +9,10 @@
                     <a href="{{ asset('rsc/osesach_v1.apk') }}" target="_blank">
                         <i class="bi bi-download"></i> APP OSESACH v 1.0.0
                     </a>
+
+                    <a href="directory/test-export" target="_blank">
+                        <i class="bi bi-file-earmark-excel"></i> Test Descarga XLS
+                    </a>
                 </div>
             </div>
         </div>
