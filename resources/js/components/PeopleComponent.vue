@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-md-6">
+                    <div class="col">
                         <div class="input-group">
                             <select class="form-control col-md-3" v-model="criterio">
                                 <option value="name">Nombre</option>
@@ -30,15 +30,21 @@
                                 <option value="email">Email</option>
                             </select>
                             <input type="text" v-model="buscar" class="form-control" placeholder="Texto a buscar" @keyup.enter="loadPersonal(1,buscar,criterio, filtro_tipo)">
-                            <button type="submit" @click="loadPersonal(1,buscar,criterio,filtro_tipo)" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
+
                         </div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <button type="submit" @click="loadPersonal(1,buscar,criterio,filtro_tipo)" class="btn btn-lg btn-info px-4"><i class="bi bi-search"></i> Filtrar</button>
+                    </div>
+                </div>
+
                 <div class="container-fluid">
                     <table class="table table-bordered table-striped table-sm">
                         <thead>
                             <tr>
-                                <th>&nbsp;</th>
+                                <th>Opciones</th>
                                 <th>Estatus</th>
                                 <th>Nombre</th>
                                 <th>Tipo</th>
@@ -53,13 +59,21 @@
                         <tbody>
                             <tr v-for="personal in arrayPersonal" :key="personal.id">
                                 <td>
-                                    <button type="button" class="btn btn-primary" @click="abrirModal('personal','ver_datos', personal)" title="Editar"><i class="bi bi-eye"></i></button>
+                                    <div class="dropdown">
+                                      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                      </button>
+                                      <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" @click="abrirModal('personal','ver_datos', personal)" ><i class="bi bi-eye"></i> Ver Ficha</a></li>
+                                        <li><a class="dropdown-item" href="#" @click="abrirModal('personal','actualizar_datos', personal)"><i class="bi bi-pencil-square"></i> Editar</a></li>
 
-                                    <button type="button" class="btn btn-info" @click="abrirModal('personal','actualizar_datos', personal)" title="Editar"><i class="bi bi-pencil-square"></i></button>
+                                        <li>
+                                            <a v-if="personal.active" class="dropdown-item" href="#" @click="editInactive(personal.id)"> <i class="bi bi-hand-thumbs-down"></i> Desactivar</a>
+                                            <a v-else class="dropdown-item" href="#" @click="editActive(personal.id)"><i class="bi bi-hand-thumbs-up"></i> Activar</a>
+                                        </li>
 
-                                    <button v-if="personal.active" type="button" class="btn btn-warning" @click="editInactive(personal.id)" title="Desactivar"> <i class="bi bi-hand-thumbs-down"></i></button>
-
-                                    <button v-else type="button" class="btn btn-secondary" @click="editActive(personal.id)" title="Activar"> <i class="bi bi-hand-thumbs-up"></i></button>
+                                      </ul>
+                                    </div>
                                 </td>
                                 <td>
                                     <span v-if="personal.active" class="badge bg-success">Activo</span>
@@ -80,15 +94,15 @@
                     <nav>
                         <ul class="pagination">
                         <li class="page-item" v-if="pagination.current_page > 1">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page-1,buscar,criterio)">Ant</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page-1,buscar,criterio,filtro_tipo)">Ant</a>
                         </li>
 
                         <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page==isActived ? 'active':'']">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio,filtro_tipo)" v-text="page"></a>
                         </li>
 
                         <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar,criterio)">Sig</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar,criterio,filtro_tipo)">Sig</a>
                         </li>
                         </ul>
                     </nav>
@@ -371,7 +385,7 @@
                     // always executed
                   });
             },
-            cambiarPagina(page,buscar,criterio){
+            cambiarPagina(page,buscar,criterio,filtro_tipo){
                 let me = this;
                 me.pagination.current_page = page;
                 me.loadPersonal(page,buscar,criterio,filtro_tipo);

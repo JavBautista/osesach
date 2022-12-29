@@ -6355,7 +6355,7 @@ __webpack_require__.r(__webpack_exports__);
       })["finally"](function () {// always executed
       });
     },
-    cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+    cambiarPagina: function cambiarPagina(page, buscar, criterio, filtro_tipo) {
       var me = this;
       me.pagination.current_page = page;
       me.loadPersonal(page, buscar, criterio, filtro_tipo);
@@ -9542,7 +9542,7 @@ var render = function render() {
   }, [_vm._v("Administrativos")])])])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
-    staticClass: "col-md-6"
+    staticClass: "col"
   }, [_c("div", {
     staticClass: "input-group"
   }, [_c("select", {
@@ -9605,8 +9605,12 @@ var render = function render() {
         _vm.buscar = $event.target.value;
       }
     }
-  }), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-primary",
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col"
+  }, [_c("button", {
+    staticClass: "btn btn-lg btn-info px-4",
     attrs: {
       type: "submit"
     },
@@ -9617,18 +9621,21 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-search"
-  }), _vm._v(" Buscar")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Filtrar")])])]), _vm._v(" "), _c("div", {
     staticClass: "container-fluid"
   }, [_c("table", {
     staticClass: "table table-bordered table-striped table-sm"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.arrayPersonal, function (personal) {
     return _c("tr", {
       key: personal.id
-    }, [_c("td", [_c("button", {
-      staticClass: "btn btn-primary",
+    }, [_c("td", [_c("div", {
+      staticClass: "dropdown"
+    }, [_vm._m(1, true), _vm._v(" "), _c("ul", {
+      staticClass: "dropdown-menu"
+    }, [_c("li", [_c("a", {
+      staticClass: "dropdown-item",
       attrs: {
-        type: "button",
-        title: "Editar"
+        href: "#"
       },
       on: {
         click: function click($event) {
@@ -9637,11 +9644,10 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-eye"
-    })]), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-info",
+    }), _vm._v(" Ver Ficha")])]), _vm._v(" "), _c("li", [_c("a", {
+      staticClass: "dropdown-item",
       attrs: {
-        type: "button",
-        title: "Editar"
+        href: "#"
       },
       on: {
         click: function click($event) {
@@ -9650,11 +9656,10 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-pencil-square"
-    })]), _vm._v(" "), personal.active ? _c("button", {
-      staticClass: "btn btn-warning",
+    }), _vm._v(" Editar")])]), _vm._v(" "), _c("li", [personal.active ? _c("a", {
+      staticClass: "dropdown-item",
       attrs: {
-        type: "button",
-        title: "Desactivar"
+        href: "#"
       },
       on: {
         click: function click($event) {
@@ -9663,11 +9668,10 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-hand-thumbs-down"
-    })]) : _c("button", {
-      staticClass: "btn btn-secondary",
+    }), _vm._v(" Desactivar")]) : _c("a", {
+      staticClass: "dropdown-item",
       attrs: {
-        type: "button",
-        title: "Activar"
+        href: "#"
       },
       on: {
         click: function click($event) {
@@ -9676,7 +9680,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-hand-thumbs-up"
-    })])]), _vm._v(" "), _c("td", [personal.active ? _c("span", {
+    }), _vm._v(" Activar")])])])])]), _vm._v(" "), _c("td", [personal.active ? _c("span", {
       staticClass: "badge bg-success"
     }, [_vm._v("Activo")]) : _c("span", {
       staticClass: "badge bg-danger"
@@ -9725,7 +9729,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.cambiarPagina(_vm.pagination.current_page - 1, _vm.buscar, _vm.criterio);
+        return _vm.cambiarPagina(_vm.pagination.current_page - 1, _vm.buscar, _vm.criterio, _vm.filtro_tipo);
       }
     }
   }, [_vm._v("Ant")])]) : _vm._e(), _vm._v(" "), _vm._l(_vm.pagesNumber, function (page) {
@@ -9744,7 +9748,7 @@ var render = function render() {
       on: {
         click: function click($event) {
           $event.preventDefault();
-          return _vm.cambiarPagina(page, _vm.buscar, _vm.criterio);
+          return _vm.cambiarPagina(page, _vm.buscar, _vm.criterio, _vm.filtro_tipo);
         }
       }
     })]);
@@ -9758,7 +9762,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.cambiarPagina(_vm.pagination.current_page + 1, _vm.buscar, _vm.criterio);
+        return _vm.cambiarPagina(_vm.pagination.current_page + 1, _vm.buscar, _vm.criterio, _vm.filtro_tipo);
       }
     }
   }, [_vm._v("Sig")])]) : _vm._e()], 2)])])])])]), _vm._v(" "), _c("div", {
@@ -9837,9 +9841,9 @@ var render = function render() {
         textContent: _vm._s(error)
       }
     });
-  }), 0)])]), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm.tipoAccion == 1 || _vm.tipoAccion == 2 ? _c("div", [_vm.tipoAccion == 1 ? [_c("div", {
+  }), 0)])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm.tipoAccion == 1 || _vm.tipoAccion == 2 ? _c("div", [_vm.tipoAccion == 1 ? [_c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(2), _vm._v(" "), _c("div", {
+  }, [_vm._m(3), _vm._v(" "), _c("div", {
     staticClass: "col-sm-9"
   }, [_c("select", {
     directives: [{
@@ -9870,7 +9874,7 @@ var render = function render() {
     });
   }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(3), _vm._v(" "), _c("div", {
+  }, [_vm._m(4), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("input", {
     directives: [{
@@ -9896,7 +9900,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(4), _vm._v(" "), _c("div", {
+  }, [_vm._m(5), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("input", {
     directives: [{
@@ -9922,7 +9926,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(5), _vm._v(" "), _c("div", {
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("input", {
     directives: [{
@@ -9948,7 +9952,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_vm._m(6), _vm._v(" "), _c("div", {
+  }, [_vm._m(7), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("datepicker", {
     model: {
@@ -9960,7 +9964,7 @@ var render = function render() {
     }
   })], 1)])] : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "form-group"
-  }, [_vm._m(7), _vm._v(" "), _c("input", {
+  }, [_vm._m(8), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -10064,7 +10068,7 @@ var render = function render() {
     }
   })])], 2) : _vm._e(), _vm._v(" "), _vm.tipoAccion == 3 ? _c("div", [_c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(8), _vm._v(" "), _c("div", {
+  }, [_vm._m(9), _vm._v(" "), _c("div", {
     staticClass: "col-sm-9"
   }, [_c("select", {
     directives: [{
@@ -10098,7 +10102,7 @@ var render = function render() {
     });
   }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row mb-2"
-  }, [_vm._m(9), _vm._v(" "), _c("div", {
+  }, [_vm._m(10), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("input", {
     directives: [{
@@ -10124,7 +10128,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_vm._m(10), _vm._v(" "), _c("div", {
+  }, [_vm._m(11), _vm._v(" "), _c("div", {
     staticClass: "col-md-9"
   }, [_c("input", {
     directives: [{
@@ -10149,7 +10153,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "form-group"
-  }, [_vm._m(11), _vm._v(" "), _c("input", {
+  }, [_vm._m(12), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -10290,7 +10294,21 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("thead", [_c("tr", [_c("th", [_vm._v(" ")]), _vm._v(" "), _c("th", [_vm._v("Estatus")]), _vm._v(" "), _c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("Tipo")]), _vm._v(" "), _c("th", [_vm._v("Direccion")]), _vm._v(" "), _c("th", [_vm._v("Teléfono")]), _vm._v(" "), _c("th", [_vm._v("Email")]), _vm._v(" "), _c("th", [_vm._v("Fecha ingreso")]), _vm._v(" "), _c("th", [_vm._v("Fecha salida")]), _vm._v(" "), _c("th", [_vm._v("Observaciones")])])]);
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("Opciones")]), _vm._v(" "), _c("th", [_vm._v("Estatus")]), _vm._v(" "), _c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("Tipo")]), _vm._v(" "), _c("th", [_vm._v("Direccion")]), _vm._v(" "), _c("th", [_vm._v("Teléfono")]), _vm._v(" "), _c("th", [_vm._v("Email")]), _vm._v(" "), _c("th", [_vm._v("Fecha ingreso")]), _vm._v(" "), _c("th", [_vm._v("Fecha salida")]), _vm._v(" "), _c("th", [_vm._v("Observaciones")])])]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("button", {
+    staticClass: "btn btn-secondary dropdown-toggle",
+    attrs: {
+      type: "button",
+      "data-bs-toggle": "dropdown",
+      "aria-expanded": "false"
+    }
+  }, [_c("i", {
+    staticClass: "bi bi-three-dots-vertical"
+  })]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;

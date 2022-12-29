@@ -24,22 +24,53 @@ class PersonController extends Controller
         $criterio = $request->criterio;
         $filtro_tipo = $request->filtro_tipo;
 
+        /*role_id:
+            1:adminsys
+            2:admin
+            3:AGENTES
+            4:SUPERVISORES
+            reques=todos
+            reques=agentes
+            reques=supervisores
+            reques=admin
+        */
+        $role_id=null;
+        switch ($filtro_tipo) {
+            case 'admin':
+                $role_id=2;
+                break;
+            case 'agentes':
+                $role_id=3;
+                break;
+            case 'supervisores':
+                $role_id=4;
+                break;
+            default:
+                $role_id=null;
+                break;
+        }
+
         if($buscar==''){
             $people = DB::table('people')
                         ->select('people.*','roles.description')
                         ->leftJoin('users', 'users.person_id', '=', 'people.id')
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->when($role_id, function ($query, $role_id) {
+                            return $query->where('users.role_id', '=', $role_id);
+                        })
                         ->orderBy('people.id', 'desc')
-                        ->paginate(20);
+                        ->paginate(10);
         }else{
             $people = DB::table('people')
                         ->select('people.*','roles.description')
                         ->leftJoin('users', 'users.person_id', '=', 'people.id')
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-                        //->leftJoin('type_users', 'people.id', '=', 'type_users.id')
                         ->where('people.'.$criterio, 'like', '%'.$buscar.'%')
+                        ->when($role_id, function ($query, $role_id) {
+                            return $query->where('users.role_id', '=', $role_id);
+                        })
                         ->orderBy('people.id','desc')
-                        ->paginate(20);
+                        ->paginate(10);
         }
 
         return [

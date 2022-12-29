@@ -2,7 +2,7 @@
     <nav class="sidebar-nav">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="/admin"><i class="icon-home"></i> Home</a>
+                <a class="nav-link" href="/"><i class="icon-home"></i> Home</a>
             </li>
             <!--<li class="nav-item">
                 <a href="tipos-usuarios" class="nav-link"> Tipos </a>
