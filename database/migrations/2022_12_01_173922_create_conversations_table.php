@@ -15,10 +15,10 @@ class CreateConversationsTable extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('agent_id');
-            $table->unsignedBigInteger('supervisor_id');
-            $table->foreign('agent_id')->references('id')->on('people')->onDelete('cascade');
-            $table->foreign('supervisor_id')->references('id')->on('people')->onDelete('cascade');
+            $table->unsignedBigInteger('person1_id');
+            $table->unsignedBigInteger('person2_id');
+            $table->foreign('person1_id')->references('id')->on('people')->onDelete('cascade');
+            $table->foreign('person2_id')->references('id')->on('people')->onDelete('cascade');
             $table->timestamps();
         });
     }

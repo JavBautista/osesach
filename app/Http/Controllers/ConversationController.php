@@ -19,4 +19,15 @@ class ConversationController extends Controller
         $conversations = Conversation::with('supervisor')->with('messages')->where('agent_id',$agent_id)->paginate(20);
         return $conversations;
     }//.getApiConversationsAgent()
+
+    public function getApiConversations(Request $request){
+        $person_id = $request->person_id;
+        $conversations = Conversation::with('messages')
+                                    ->with('person1')
+                                    ->with('person2')
+                                    ->where('person1_id', $person_id)
+                                    ->orWhere('person2_id', $person_id)
+                                    ->paginate(20);
+        return $conversations;
+    }//.getApiConversationsAgent()
 }

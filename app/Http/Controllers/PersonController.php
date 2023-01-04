@@ -223,25 +223,72 @@ class PersonController extends Controller
 
     public function getApiPersonalForMessages(Request $request){
         /*role_id:
+            1:AdminSys
+            2:ADMINS
             3:AGENTES
             4:SUPERVISORES
         */
-        $role_a_buscar=0;
-        //Si es Agente buscamos los supervisores
-        if($request->role_id==3)
-            $role_a_buscar=4;
-        //Si es Super bsucamos en lso agentes
-        elseif($request->role_id==4)
-            $role_a_buscar=3;
+        $person_id = $request->person_id;
+        $where_buscar=null;
+        if($request->buscar!=''){
+            $where_buscar =  $request->buscar;
+        }
 
-        $personal = DB::table('people')
+        //$role_a_buscar=null;
+        //Si el request->role_id que solicita es Agente (3) solo devolveremos a los supervisores
+        //if($request->role_id==3) $role_a_buscar=4;
+
+        $personal=null;
+        #---------------------------------------------------------------------------------------#
+
+        #ADMIN: obtiene a todos
+        if($request->role_id==2):
+            $personal = DB::table('people')
                         ->select('people.*','roles.description')
                         ->leftJoin('users', 'users.person_id', '=', 'people.id')
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-                        ->where('users.role_id',$role_a_buscar)
                         ->where('people.active',1)
+                        ->where('people.id','!=',$person_id)
+                        ->when($where_buscar, function ($query, $where_buscar) {
+                            return $query->where('people.name', 'like', '%'.$where_buscar.'%');
+                        })
                         ->orderBy('people.name', 'asc')
                         ->paginate(20);
+        endif;
+        #---------------------------------------------------------------------------------------#
+        #AGENTE: obtenemos solo a su supervisor asignado
+        if($request->role_id==3):
+            //Obtenemos el id del supervisor de los datos nuestro agente
+            $agente = Person::findOrFail($person_id);
+            //Verificamos porque podria no tener un super asignado
+            if($agente->supervisor_id>0){
+                $personal = DB::table('people')
+                        ->select('people.*','roles.description')
+                        ->leftJoin('users', 'users.person_id', '=', 'people.id')
+                        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->where('people.id','=',$agente->supervisor_id)
+                        ->paginate(2);
+            }
+        endif;//.if($request->role_id==3)
+        #---------------------------------------------------------------------------------------#
+
+        #SUPERVISOR: obtenemos solo a su personal y otros Super y Admins
+        if($request->role_id==4):
+            $personal = DB::table('people')
+                        ->select('people.*','roles.description')
+                        ->leftJoin('users', 'users.person_id', '=', 'people.id')
+                        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                        ->where('people.active',1)
+                        ->where('people.supervisor_id','=',$person_id)
+                        ->orWhere('users.role_id','!=',3)
+                        ->where('people.id','!=',$person_id)
+                        ->when($where_buscar, function ($query, $where_buscar) {
+                            return $query->where('people.name', 'like', '%'.$where_buscar.'%');
+                        })
+                        ->orderBy('people.name', 'asc')
+                        ->paginate(20);
+        endif;//.if($request->role_id==3)
+        #---------------------------------------------------------------------------------------#
         return $personal;
     }
 }

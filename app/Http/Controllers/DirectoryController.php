@@ -34,12 +34,9 @@ class DirectoryController extends Controller
         $directories = Directory::where('active',1)
                     ->where('nombre_unidad', 'like', "%$buscar%")
                     ->orderBy('id','desc')
-                    ->get();
+                    ->paginate(20);
 
-        return response()->json([
-            'ok'=>true,
-            'data' => $directories,
-        ]);
+        return $directories;
 
     }
 

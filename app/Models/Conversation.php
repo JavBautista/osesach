@@ -14,11 +14,11 @@ class Conversation extends Model
         return $this->hasMany(Message::class);
     }
 
-    public function supervisor(){
+    public function person1(){
         return $this->belongsTo(Person::class);
     }
 
-    public function agent(){
+    public function person2(){
         return $this->belongsTo(Person::class);
     }
 }

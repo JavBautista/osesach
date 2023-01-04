@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedBigInteger('conversation_id');
             $table->unsignedBigInteger('author_id');
             $table->text('message')->nullable();
+            $table->boolean('read')->default(0);
             $table->timestamps();
 
             $table->foreign('conversation_id')->references('id')->on('conversations');

@@ -50,10 +50,20 @@ Route::get('person/get/supervisores','App\Http\Controllers\PersonController@getA
 
 Route::get('person/get/personal-for-messages','App\Http\Controllers\PersonController@getApiPersonalForMessages');
 
-Route::get('conversations/get/supervisor','App\Http\Controllers\ConversationController@getApiConversationsSupervisor');
-Route::get('conversations/get/agent','App\Http\Controllers\ConversationController@getApiConversationsAgent');
-
+//GET CONVERSATIONS
+    //Route::get('conversations/get/supervisor','App\Http\Controllers\ConversationController@getApiConversationsSupervisor');
+    //Route::get('conversations/get/agent','App\Http\Controllers\ConversationController@getApiConversationsAgent');
+Route::get('conversations/get','App\Http\Controllers\ConversationController@getApiConversations');
 Route::post('message/store','App\Http\Controllers\MessageController@store');
+
+Route::get('messages/get-not-read','App\Http\Controllers\MessageController@getMessagesNotRead');
+Route::post('conversation/update-messages-to-read','App\Http\Controllers\MessageController@updateMessagesToRead');
+//GET CONVERSATIONS
+
+//NEW CHATS
+//Route::get('chats/get','App\Http\Controllers\ChatController@getApiChats');
+//Route::post('chat/message/store','App\Http\Controllers\ChatController@storeChatMessage');
+//.NEW CHAT
 
 Route::group([
     'prefix' => 'auth'
