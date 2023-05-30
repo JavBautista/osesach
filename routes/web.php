@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function(){
+    return view('suspended');
+});
+Route::get('/login', function(){
+    return view('suspended');
+});
+/*
 Auth::routes([
     'login'    => true,
     'logout'   => true,
@@ -34,10 +41,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/passwords/reset', [App\Http\Controllers\HomeController::class,'passwordReset'])->name('password.reset');
     Route::post('/user/passwords/update', [App\Http\Controllers\HomeController::class,'updatePassword'])->name('password.update');
 
-    /*ROLES (TIPOS) DE USUARIOS*/
+    //ROLES (TIPOS) DE USUARIOS
     Route::get('/roles-usuarios/get/all', [App\Http\Controllers\TypeUserController::class, 'getAll']);
 
-    /*PERSONAL*/
+    //PERSONAL
     Route::get('/personal', [App\Http\Controllers\PersonController::class, 'index'])->name('personal');
     Route::get('/personal/get/all/active', [App\Http\Controllers\PersonController::class, 'getAllActive']);
     Route::get('/personal/get', [App\Http\Controllers\PersonController::class, 'get']);
@@ -47,7 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/personal/active', [App\Http\Controllers\PersonController::class, 'active']);
     Route::put('/personal/inactive', [App\Http\Controllers\PersonController::class, 'inactive']);
 
-    /*ACTIVIDADES*/
+    //ACTIVIDADES
     Route::get('/actividades', [App\Http\Controllers\ActivityController::class, 'inicio']);
     Route::get('/actividades/all/get', [App\Http\Controllers\ActivityController::class, 'loadAllActivities']);
     Route::get('/actividades/get', [App\Http\Controllers\ActivityController::class, 'get']);
@@ -56,7 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
     //Route::put('/actividades/active', [App\Http\Controllers\ActivityController::class, 'active']);
     //Route::put('/actividades/inactive', [App\Http\Controllers\ActivityController::class, 'inactive']);
 
-    /*DIRECTORIO*/
+    //DIRECTORIO
     Route::get('/directorio', [App\Http\Controllers\DirectoryController::class, 'inicio']);
 
     Route::get('/directorio/get', [App\Http\Controllers\DirectoryController::class, 'get']);
@@ -94,3 +101,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('directory/export', [App\Http\Controllers\DirectoryController::class, 'directoryExport']);
 
 });#./Middlware AUTH
+
+*/

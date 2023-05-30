@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 */
+/*
 Route::get('directory','App\Http\Controllers\DirectoryController@index');
 
 Route::get('directory/buscar','App\Http\Controllers\DirectoryController@buscar');
@@ -78,3 +79,4 @@ Route::group([
         Route::get('user', '\App\Http\Controllers\AuthController@user');
     });
 });
+*/
