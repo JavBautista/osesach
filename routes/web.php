@@ -13,13 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function(){
+/*Route::get('/', function(){
     return view('suspended');
 });
+
 Route::get('/login', function(){
     return view('suspended');
 });
-/*
+*/
+
 Auth::routes([
     'login'    => true,
     'logout'   => true,
@@ -102,4 +104,3 @@ Route::group(['middleware' => 'auth'], function () {
 
 });#./Middlware AUTH
 
-*/
